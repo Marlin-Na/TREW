@@ -12,9 +12,8 @@ library(RMySQL)
 library(DT)
 
 #### Load the database.
-setwd("/Users/weizhen/Desktop/Research/RNA\ methylation\ Target\ Database/2.\ Database\ build/4.\ Database\ Filling\ -\ SQLITE")
 #db <- dbConnect(MySQL(), dbname="TREW", username = "root", password = "yumenwh3920851")
-db <- dbConnect(SQLite(), dbname= "TREW_0.2.1.db")
+db <- dbConnect(SQLite(), dbname= "TREW.db")
 Genome_Location <- dbReadTable(db, "Genome_Location")
 Sites_Info <- dbReadTable(db, "Sites_Info")
 Source_Info <- dbReadTable(db, "Source_Info")
