@@ -383,7 +383,7 @@ ui <- shinyUI(fluidPage(
 #### Server
 server <- shinyServer(function(input, output) {
     #Generate and output the general table.
-    General_Table <<-
+    General_Table <-
         reactive({
             GenerateGeneral(
                 Species2 = input$Species_choice,
@@ -393,7 +393,7 @@ server <- shinyServer(function(input, output) {
                 Liftover2 = input$Liftover_choice
             )
         })
-    DT_General_Table <<-
+    DT_General_Table <-
         reactive({
             DT::datatable(
                 General_Table(),
@@ -411,7 +411,7 @@ server <- shinyServer(function(input, output) {
     output$G_Table <-
         DT::renderDataTable(DT_General_Table(), server = TRUE)
     #Select the Records and generate the specific tables (Default & Competed).
-    Select_number <<-
+    Select_number <-
         reactive({
             as.numeric(input$G_Table_rows_selected)
         })
