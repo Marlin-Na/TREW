@@ -247,7 +247,7 @@ ui <- shinyUI(fluidPage(
     #includeCSS("fonts.css"),
     titlePanel("TREW"),
     navlistPanel("Home", widths = c(2, 10),
-        tabPanel("Introduction",
+        tabPanel("Introduction", value = "intro",
             h2("Welcome to TREW"),
             h3("Epitranscriptomic targets of RNA modification readers, erasers and writers"),
             br(),
@@ -274,7 +274,7 @@ ui <- shinyUI(fluidPage(
               using the Search function and get an intuitive impression with the Visualization function.")
         ),
         "Function",
-        tabPanel("Querying",
+        tabPanel("Querying", value = "query",
             fluidRow(
                 column(width = 6, offset = 4,
                        h2("TREW Database Search"))
@@ -323,10 +323,10 @@ ui <- shinyUI(fluidPage(
                                 button 'Column visibility' could be used to hide the column(s) you are not interested."))
             )
         ),
-        tabPanel("Visualization",
+        tabPanel("Visualization", value = "viz",
                  h3("Coming soon...")),
         "About",
-        tabPanel("Help",
+        tabPanel("Help", value = "help",
             h2("How to use the query engine"),
             br(),
             hr(),
