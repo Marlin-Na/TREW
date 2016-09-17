@@ -277,9 +277,14 @@ ui <- shinyUI(fluidPage(
         tabPanel("Querying",
             fluidRow(
                 column(width = 6, offset = 4,
-                       h2("TREW Database Search")),
+                       h2("TREW Database Search"))
+            ),
+            fluidRow(
                 column(width = 6, offset = 3,
-                       textInput("Gene_choice", "", width = 600, placeholder = "e.g CDK1"),
+                       textInput("Gene_choice", "", width = 600, placeholder = "e.g CDK1"))
+            ),
+            fluidRow(
+                column(width = 6, offset = 3,
                        helpText("•Please input a gene symbol in the search box above."), 
                        helpText("•The incomplete symbol could be identified by this search engine."),
                        helpText("•The search process will take several seconds. Thanks for your patient waiting."))
