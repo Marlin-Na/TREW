@@ -281,7 +281,9 @@ ui <- shinyUI(fluidPage(
             ),
             fluidRow(
                 column(width = 6, offset = 3,
-                       textInput("Gene_choice", "", width = 600, placeholder = "e.g CDK1"))
+                       textInput("Gene_choice", "", width = 600, placeholder = "e.g CDK1")),
+                column(width = 3,
+                       actionButton(inputId = 'submit_gene',label = 'Submit'))
             ),
             fluidRow(
                 column(width = 6, offset = 3,
@@ -389,7 +391,7 @@ ui <- shinyUI(fluidPage(
 server <- shinyServer(function(input, output) {
     #Generate and output the general table.
     General_Table <-
-        reactive({
+        eventReactive(input$submit_gene,{
             GenerateGeneral(
                 Species2 = input$Species_choice,
                 Target2 = input$Regulation_choice,
