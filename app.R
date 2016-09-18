@@ -141,17 +141,8 @@ GenerateFull <- function(Species = NULL,
 }
 
 #==#2.Generate the general DT table with Record_quantity marked.
-GenerateGeneral <- function(Species2 = NULL, 
-                            Target2 = NULL, 
-                            Modification2 = NULL, 
-                            Gene_ID2 = NULL,
-                            Liftover2 = NULL)
-{# Generate full table.
-    FullTable <- GenerateFull(Species = Species2, 
-                              Target = Target2, 
-                              Modification = Modification2, 
-                              Gene_ID = Gene_ID2,
-                              Liftover = Liftover2)
+GenerateGeneral <- function(FullTable = NULL) ## The argument should be the output of `GenerateFull`
+{
     # Extract needed columns.
     FullGeneral <- FullTable[, c("Gene_ID" ,"Target", "Target_type", "Modification", "Record_Q", "Positivity_percent", 
                                  "Positive_Q", "Negative_Q", "Consistent_Q")]
@@ -407,15 +398,19 @@ ui <- shinyUI(fluidPage(
 #### Server
 server <- shinyServer(function(input, output) {
     #Generate and output the general table.
-    General_Table <-
+    Full_Table <- 
         eventReactive(input$submit_gene,{
-            GenerateGeneral(
-                Species2 = input$Species_choice,
-                Target2 = input$Regulation_choice,
-                Modification2 = input$Modification_choice,
-                Gene_ID2 = input$Gene_choice,
-                Liftover2 = input$Liftover_choice
+            GenerateFull(
+                Species = input$Species_choice,
+                Target = input$Regulation_choice,
+                Modification = input$Modification_choice,
+                Gene_ID = input$Gene_choice,
+                Liftover = input$Liftover_choice
             )
+        })
+    General_Table <-
+        reactive({
+            GenerateGeneral(Full_Table())
         })
     DT_General_Table <-
         reactive({
