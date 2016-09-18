@@ -305,7 +305,7 @@ ui <- shinyUI(fluidPage(
                     helpText("Look up in Genome Browser")
                 ),
                 column(width = 3,
-                    selectInput("browser_species",label = "Species",choices = c("Not Available" = ""))
+                    selectInput("browser_assembly",label = "Genome assembly",choices = c("Not Available" = ""))
                 ),
                 column(width = 5,
                     actionButton("lookup_gene",label = "Look up")
