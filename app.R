@@ -305,6 +305,22 @@ ui <- shinyUI(fluidPage(
                        selectInput("Modification_choice", "Modification type", c("All of following", "m6A","m1A", "m5C", "Psi")),
                        selectInput("Liftover_choice", "Conversion", c("Yes", "No")))
             ),
+            
+            ## Options for Genome Browser | TODO: display gene and selectInput inline
+            hr(),
+            fluidRow(
+                column(width = 4,
+                    h4("Genome browser"),
+                    helpText("Look up in Genome Browser")
+                ),
+                column(width = 3,
+                    selectInput("browser_species",label = "Species",choices = c("Not Available" = ""))
+                ),
+                column(width = 5,
+                    actionButton("lookup_gene",label = "Look up")
+                )
+            ),
+            
             hr(),
             helpText("Choose and select the row(s) you are interested in the above table, then you can check the detailed data 
                      from the table below."),
@@ -324,7 +340,8 @@ ui <- shinyUI(fluidPage(
             )
         ),
         tabPanel("Visualization", value = "viz",
-                 h3("Coming soon...")),
+            uiOutput(outputId = 'iframe_jbrowse')
+        ),
         "About",
         tabPanel("Help", value = "help",
             h2("How to use the query engine"),
@@ -440,6 +457,45 @@ server <- shinyServer(function(input, output) {
     
     output$S_Table <-
         DT::renderDataTable(Specific_Table(), server = TRUE)
+    
+    
+    
+    # JBrowse Part ----------------
+    which_row_clicked <- 
+        reactive({
+            as.numeric(input$G_Table_row_last_clicked)
+        })
+    
+    observeEvent(which_row_clicked(),{
+        # DO:
+        #   1. Get Info from the table (NEED THE FULL TABLE)
+        #   2. Update SelectInput for Species
+        #   3. Generate link using `<<-`
+    })
+    
+    # Further: Dramatically show the Gene last clicked 
+      # output$gene_clicked <-
+      #     reactive({
+      #         #### 
+      #     })
+    
+    observeEvent(input$lookup_gene,{
+        # DO: Navigate to the Visulization Tabpanel
+    })
+    
+    output$iframe_jbrowse <- renderUI({
+        # DO: Generate UI using the link
+        # A Template of output:
+          # fluidRow(
+          #     shiny::tags$iframe(
+          #         src = "./jbrowse/index.html",
+          #         width = "100%",
+          #         height = "700",
+          #         style = "border: 1px solid black",
+          #         "Sorry, your browser does not support iframe."
+          #     )
+          # )
+    })
 })
 
 
