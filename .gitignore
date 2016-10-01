@@ -5,3 +5,6 @@
 
 TREW.db
 www/jbrowse/*
+tmp/*
+idx*
+Table*.txt
