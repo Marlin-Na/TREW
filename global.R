@@ -1,3 +1,6 @@
+
+library(dplyr)
+
 library(shiny)
 library(DT)
 library(readr)
@@ -148,3 +151,92 @@ Tb2_DT <- function(Tb2){
                   ColReorder = TRUE)
   )
 }
+
+
+
+
+
+
+##### Functions for generating Jbrowse UI  -------------------------------
+
+# df.genes <- readRDS('dataframe_genes.Rds')
+
+getAvlGenomesFromGene <- function (GeneID, DfGenes = df.genes) {
+    avl.genomes <- DfGenes %>%
+        dplyr::filter(gene_id == GeneID) %>%
+        dplyr::select(genome_assembly) %>%
+        as.character
+
+    species <-
+        ifelse(avl.genomes == 'hg19', 'Homo sapiens',
+        ifelse(avl.genomes == 'mm10', 'Mus musculus',
+        ifelse(avl.genomes == 'dm6' , 'Drosophila melanogaster', NA)))
+
+    names(avl.genomes) <- species
+
+    return(avl.genomes)
+}
+
+## The genome should be specified by user from available genomes.
+
+getDfGene <- function (GeneID, Genome, DfGenes = df.genes) {
+    df.gene <- DfGenes %>%
+        dplyr::filter(gene_id == GeneID & genome_assembly == Genome) 
+
+    return(df.gene) # Should be length one
+}
+
+getRange <- function (DfGene, resizeFactor = 1.5) {
+    width <- DfGene$width
+    start <- DfGene$start - round(((resizeFactor-1)/2)*width)
+    end <- DfGene$end + round(((resizeFactor-1)/2)*width)
+    range <- paste0(start,'..',end)
+    return(range)
+}
+
+getHighLight <- function (DfGene) {
+    start <- DfGene$start
+    end <- DfGene$end
+    range <- paste0(start,'..',end)
+    return(range)
+}
+
+getTracks <- function () {
+    ## TODO..
+    return('DNA,gene_model')
+}
+
+# A sample url is "http://180.208.58.19/jbrowse/?data=data/hg19&loc=chr6:30309362..30310357&tracks=DNA,all_m6A,gene_model&highlight=chr6:30309513..30310230"
+getLinkJbrowse <-
+    function (Genome,                      # e.g. 'hg19'
+              Chromosome,                  # e.g. 'chr6'
+              Range = '',                  # e.g. '30309362..30310357'
+              Tracks = 'DNA,gene_model',   # e.g. 'DNA,gene_model,all_m6A'
+              HighLight = '',              # e.g. '30309513..30310230'
+              BaseUrl = './jbrowse')       # e.g. 'http://180.208.58.19/jbrowse'
+{
+    url <- paste0(
+        BaseUrl, '/',
+        '?data=data/', Genome,
+        '&loc=', Chromosome,
+        if (Range == '') '' else paste0(':', Range),
+        '&tracks=', Tracks,
+        if (HighLight == '') '' else paste0('&highlight=',Chromosome,':',HighLight)
+    )
+
+    return(url)
+}
+
+
+getIframeJbrowse <-
+    function(LinkJbrowse,
+             width = '100%', height = '700', style = 'border: 1px solid black', ...)
+{
+    shiny::tags$iframe(
+        src = LinkJbrowse,
+        ...,
+        "Sorry, your browser does not support iframe."
+    )
+}
+
+
