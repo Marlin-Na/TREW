@@ -1,0 +1,10 @@
+1. Make embeded Jbrowse iframe resizable.
+
+2. Rebuild UI to make Jbrowse and the second DT table as conditional panels.
+
+3. Process new jbrowse tracks according to modification and target, and then build the jbrowse iframe to dramatically show the tracks.
+
+4. Fix the genes that do not match txdb(gtf) on letter case.
+
+5. Fix the genes that do not exist in txdb.
+
