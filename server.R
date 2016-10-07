@@ -7,7 +7,7 @@ jbrowse.url <- 'http://180.208.58.19/jbrowse' # If the jbrowse is within the www
 
 function(input, output,session) {
     
-    tb1 <- eventReactive(input$button, {
+    tb1 <- eventReactive(input$submitQuery, {
         Tb1(
             Target = input$pro,
             Modification = input$mod,

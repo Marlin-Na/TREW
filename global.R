@@ -241,16 +241,19 @@ getLinkJbrowse <-
 
 
 getIframeJbrowse <-
-    function(LinkJbrowse,
-             width = '100%', height = '500', style = 'border: 1px solid black', ...)
+    function(LinkJbrowse, style = 'border: 1px solid black',
+             div_id = 'resizable', div_style = 'width: 100%; height: 500px;')
 {
-    shiny::tags$iframe(
+    tags$iframe(
         src = LinkJbrowse,
-        width = width,
-        height = height,
         style = style,
-        ...,
+        width = '100%',
+        height = '100%',
         "Sorry, your browser does not support iframe."
+    ) %>%
+    tags$div(
+        id = div_id,
+        style = div_style
     )
 }
 
