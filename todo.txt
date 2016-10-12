@@ -1,11 +1,11 @@
 TODO:  
 
-- Rebuild UI to make Jbrowse and the second DT table as conditional panels.
+- Rebuild UI to make Jbrowse and the second DT table as a navlistPanel.
 - Process new jbrowse tracks according to modification and target, and then build the jbrowse iframe to dramatically show the tracks.
-- Fix the genes that do not match txdb(gtf) on letter case.
+- Fix the genes that do not match txdb(gtf) on letter case. (to reproduce, try Cdk9)
 - Fix the genes that do not exist in txdb (incomplete info? try directly use the GTF files).
 
 
-DONE (forsaked):
+DONE (forsaken):
 
 - Make embeded Jbrowse iframe resizable.
