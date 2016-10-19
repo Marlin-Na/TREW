@@ -1,6 +1,3 @@
-
-library(dplyr)
-
 library(shiny)
 library(DT)
 library(readr)
@@ -14,8 +11,11 @@ idx_3to1 <- read_rds("idx_3to1.rds")
 Tb1 <- function(Species = "All", 
                 Target = "All", 
                 Modification = "All", 
+                RNA_type = "All",
+                RNA_region = "All",
                 Gene_ID = ".",
-                Include_Liftover = "Yes")
+                Include_Liftover = "Yes",
+                Motif_restriction = "No")
 { 
   # Initialize indexes
   idx2 = !vector(length = dim(Table2)[1])
@@ -44,13 +44,30 @@ Tb1 <- function(Species = "All",
   
   # Select Genes.
   hit_idx <- grepl(Gene_ID, Table2$Gene_ID, ignore.case = TRUE)
-  if(sum(hit_idx) == 0){stop("Not found your gene, please input Gene Symbol....")}
+  
   idx2 <-  hit_idx & rep(idx3,idx_3to2)
+  
+  # Select RNA types
+  if (RNA_type != "All") {
+    idx2 <- idx2 & (Table2[[paste("Overlap_",RNA_type,sep = "")]] > 0)
+  }else{}
+  
+  # Select RNA regions
+  if (RNA_region != "All") {
+    idx2 <- idx2 & (Table2[[paste("Overlap_",RNA_region,sep = "")]] > 0)
+  }else{}
+  
+  # Select motif
+  if (Motif_restriction == "Yes") {
+    idx2 <- idx2 & Table2$Distance_ConsensusMotif < 10
+  }else{}
   
   # Merge the table.
   idx2[which(is.na(idx2))] <- FALSE
   
   idx1 <- rep(idx2,idx_2to1)
+  
+  if(sum(idx2) == 0){stop("Not found your required sites.")}
   
   Tb1 <- cbind(Table1[which(idx1),],
                Table2[rep(which(idx2),
@@ -60,7 +77,6 @@ Tb1 <- function(Species = "All",
   cat("Tb1 run once\n")
   Tb1
 }
-
 
 count.x <- function(tb1.x,tb2.y){
   tb2.y <- tb2.y[,c(1,2)]
@@ -72,6 +88,7 @@ count.x <- function(tb1.x,tb2.y){
 }
 
 Tb2 <- function(Tb1,Test = FALSE){
+  Tb1 <- Tb1[!duplicated(Tb1$Meth_Site_ID),]
   Tb2 <- unique(data.frame(Target = Tb1$Target,
                            Gene_ID = Tb1$Gene_ID, 
                            Target_type = Tb1$Target_type, 
@@ -98,62 +115,44 @@ Tb3 <- function(Tb1,Tb2,Select_Number = 1:dim(Tb2)[1],Return_All = "No")
   Tb3 <- Tb1[which(Tb1$Target %in% Tb2_s$Target & 
                      Tb1$Modification %in% Tb2_s$Modification &
                      Tb1$Gene_ID %in% Tb2_s$Gene_ID),]
-  
-if (Return_All != "Yes") {
-    Tb3 <- Tb3[,c(32,2,31,41,39,34,33,14,12,13)]
-  } else {
-    Tb3 <- Tb3[,c(32,2,31,12,1,6,5,3,4,13,41,33,34,35,36,39,40,42,9,10,15,16,11,14,17,18,19,20,21,22,23,24,25,26,27,28,38,43,37)]
-  }
+  Tb3 <- Tb3[,c(1,2,32,31,12,1,6,5,3,4,13,41,33,34,35,36,39,40,42,9,10,15,16,11,14,17,18,19,20,21,22,23,24,25,26,27,28,38,43,37)]
   cat("Tb3 run once\n")
   Tb3
 }
 
-Tb3_DT <- function(Tb3)
+Tb_DT <- function(Tb,collab,main = NULL)
 {
-  DT::datatable(Tb3, rownames= FALSE, filter = "top",
-                extensions = list("ColReorder" = NULL,
-                                  "Buttons" = NULL,
-                                  "FixedHeader" = NULL,
-                                  "Scroller" = NULL),
+  DT::datatable(Tb, 
+                rownames= FALSE, 
+                colnames = collab,
+                caption = main,
+                filter = list(position = "bottom",clear = FALSE),
+                style = 'bootstrap',
+                class = 'cell-border stripe',
+                selection = list(mode = 'single', selected = c(1), target = 'row') ,
+                extensions = c("Scroller","ColReorder","Buttons","FixedHeader","FixedColumns","Responsive"),
                 options = list(
                   scrollX = TRUE,
                   deferRender = TRUE,
-                  scrollY = 400,
                   scroller = TRUE,
-                  dom = 'BRrlftpi',
+                  scrollY = 400,
+                  dom = 'Brt',
                   autoWidth=TRUE,
                   fixedHeader = TRUE,
                   lengthMenu = list(c(10, 50, -1), c('10', '50', 'All')),
                   ColReorder = TRUE,
-                  buttons =
-                    list(
+                  buttons = list(
+                      I('colvis'),
                       'copy',
                       'print',
                       list(
                         extend = 'collection',
                         buttons = c('csv', 'excel'),
                         text = 'Download'
-                      ),
-                      I('colvis')
+                      )
                     )
                 ))
 }
-
-Tb2_DT <- function(Tb2){ 
-  DT::datatable(Tb2,
-                rownames = FALSE,
-                options = list(
-                  scrollX = TRUE,
-                  deferRender = TRUE,
-                  scrollY = 340,
-                  dom = 'lrtip',
-                  autoWidth = TRUE,
-                  ColReorder = TRUE)
-  )
-}
-
-
-
 
 
 
