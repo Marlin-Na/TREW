@@ -206,10 +206,12 @@ getHighLight <- function (DfGene) {
     return(range)
 }
 
-getTracks <- function (  # TODO  -------------------------
-                    #   Modification   # e.g. 'm6A'
-                                       ) {
-    return('DNA,gene_model')
+getTracks <- function (Datasets, PrimaryTracks = 'gene_model') { # 'DNA,gene_model'
+    Datasets %>%
+        unique %>%
+        paste(collapse = ',') %>%
+        paste0(',', PrimaryTracks) %>%
+    return
 }
 
 # A sample url is "http://180.208.58.19/jbrowse/?data=data/hg19&loc=chr6:30309362..30310357&tracks=DNA,all_m6A,gene_model&highlight=chr6:30309513..30310230&nav=0&tracklist=0&overview=0"
