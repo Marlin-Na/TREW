@@ -1,3 +1,4 @@
+setwd("/Users/weizhen/Desktop/Research/RNA\ methylation\ Target\ Database/5.\ Shiny_complete")
 library(shiny)
 library(DT)
 library(readr)
@@ -8,59 +9,23 @@ idx_2to1 <- inverse.rle(read_rds("idx_2to1.rle.rds"))
 idx_3to2 <- read_rds("idx_3to2.rds")
 idx_3to1 <- read_rds("idx_3to1.rds")
 
-Tb1 <- function(Species = "All", 
-                Target = "All", 
-                Modification = "All", 
-                RNA_type = "All",
-                RNA_region = "All",
-                Gene_ID = ".",
-                Include_Liftover = "Yes",
-                Motif_restriction = "No")
+Tb1 <- function(idx_3 = TRUE,
+                idx_2 = TRUE,
+                Gene_ID = "."
+                )
 { 
-  # Initialize indexes
-  idx2 = !vector(length = dim(Table2)[1])
-  idx3 = !vector(length = dim(Table3)[1])
-  # Select species
-  if (Species != "All") {
-    idx3 <- Table3$Species == Species
-  }else{}
-  # Select regulators
-  if (Target == "Regulator") {
-    idx3 <- idx3 & !Table3$Target %in% c("YTHDF1","YTHDF2","YTHDC1")
-  }else{
-    if (Target == "Regulatee") {
-      idx3 <- idx3 & Table3$Target %in% c("YTHDF1","YTHDF2","YTHDC1")
-    }else{}
-  }
-  # Select Modifications.
-  if (Modification != "All") {
-    idx3 <- idx3 & (Table3$Modification == Modification)
-  }else{}
+  # Generate idx3 & idx2
+    idx3 <- eval(parse(text = idx_3))
+    idx2 <- eval(parse(text = idx_2))
   
-  # Select LiftOvers.
-  if (Include_Liftover != "Yes") {
-    idx3 <- idx3 & is.na(Table3$LiftOver)
-  }else{}
-  
+  # length correction
+    if (length(idx2) == 1) idx2 = rep(idx2,nrow(Table2))
+    if (length(idx3) == 1) idx3 = rep(idx3,nrow(Table3))
+    
   # Select Genes.
   hit_idx <- grepl(Gene_ID, Table2$Gene_ID, ignore.case = TRUE)
   
   idx2 <-  hit_idx & rep(idx3,idx_3to2)
-  
-  # Select RNA types
-  if (RNA_type != "All") {
-    idx2 <- idx2 & (Table2[[paste("Overlap_",RNA_type,sep = "")]] > 0)
-  }else{}
-  
-  # Select RNA regions
-  if (RNA_region != "All") {
-    idx2 <- idx2 & (Table2[[paste("Overlap_",RNA_region,sep = "")]] > 0)
-  }else{}
-  
-  # Select motif
-  if (Motif_restriction == "Yes") {
-    idx2 <- idx2 & Table2$Distance_ConsensusMotif < 10
-  }else{}
   
   # Merge the table.
   idx2[which(is.na(idx2))] <- FALSE
@@ -153,6 +118,92 @@ Tb_DT <- function(Tb,collab,main = NULL)
                     )
                 ))
 }
+
+##### Functions to prepare index for filters
+
+Into_var <- function(x) gsub(" ","_", x)
+stat_tf <- function(x) gsub("< .","less",x)
+
+#Variable enumeration
+#Table3_length
+All_ = TRUE
+
+#Modification
+hmrC_ = Table3$Target == "hmrC"
+m1A_ = Table3$Target == "m1A"
+m6A_ = Table3$Target == "m6A"
+Psi_ = Table3$Target == "Psi"
+m5C_ = Table3$Target == "m5C"
+
+#Factors
+dTet_ = Table3$Target == "dTet"
+ALKBH_ = Table3$Target == "ALKBH"
+KIAA1429_ = Table3$Target == "KIAA1429"
+METTL14_ = Table3$Target == "METTL14"
+METTL3_ = Table3$Target == "METTL3"
+WTAP_ = Table3$Target == "WTAP"
+YTHDF2_ = Table3$Target == "YTHDF2"
+hPUS1_ = Table3$Target == "hPUS1"
+HNRNPC_ = Table3$Target == "HNRNPC"
+YTHDC1_ = Table3$Target == "YTHDC1"
+YTHDF1_ = Table3$Target == "YTHDF1"
+DNMT2_ = Table3$Target == "DNMT2"
+NSUN2_ = Table3$Target == "NSUN2"
+Fto_ = Table3$Target == "Fto"
+Reader_ = YTHDF1_&YTHDF2_&YTHDC1_
+Eraser_ = ALKBH_&Fto_
+Writer_ = !(Reader_|Eraser_)
+
+#Species
+Drosophila_melanogaster_ = Table3$Species == "Drosophila melanogaster"
+Homo_sapiens_ = Table3$Species == "Homo sapiens"
+Mus_musculus_ = Table3$Species == "Mus musculus"
+Yes_ = TRUE
+No_ = is.na(Table3$LiftOver)
+
+#Cell line
+S2_ = Table3$Cell_line == "S2"
+Hek293T_ = Table3$Cell_line == "Hek293T"
+MEF_ = Table3$Cell_line == "MEF"
+Mouse_3T3L1_ = Table3$Cell_line == "3T3L1"
+Mouse_Mid_Brain_ = Table3$Cell_line == "Mouse Mid Brain"
+A549_ = Table3$Cell_line == "A549"
+Hela_Cell_ = Table3$Cell_line == "Hela Cell"
+MouseESC_ = Table3$Cell_line == "Mouse ESC"
+HEF_ = Table3$Cell_line == "HEF"
+
+#Technique
+MeRIP_ = Table3$Technique == "MeRIP"
+ParCLIP_ = Table3$Technique == "ParCLIP"
+AzaIP_ = Table3$Technique == "AzaIP"
+Bisulfite_ = Table3$Technique == "Bisulfite"
+
+# #Table 2 large vectors
+# RNA types
+mRNA_ = Table2$Overlap_mRNA > 0
+lncRNA_ = Table2$Overlap_lncRNA > 0
+sncRNA_ = Table2$Overlap_sncRNA > 0
+tRNA_ = Table2$Overlap_tRNA > 0
+miRNA_ = Table2$Overlap_miRNA > 0
+
+# Stat significance
+No_filter_ = TRUE
+p_less05_ = Table2$Diff_p_value < .05
+p_less01_ = Table2$Diff_p_value < .01
+fdr_less05_ = Table2$Diff_fdr < .05
+fdr_less01_ = Table2$Diff_fdr < .01
+
+# Consistency
+Consistent_sites_only_ = Table2$Consistency > 0
+
+# Motif
+Motif_restriction_ = Table2$Distance_ConsensusMotif < 10
+
+# RNA region
+UTR5_ = Table2$Overlap_UTR5
+CDS_ = Table2$Overlap_CDS
+UTR3_ = Table2$Overlap_UTR3
+miRNATS_ = Table2$Overlap_miRNATS
 
 
 

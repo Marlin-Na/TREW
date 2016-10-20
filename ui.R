@@ -12,7 +12,7 @@ fluidPage(
     column(3,
            selectInput("pro",
                        "Proteins:",
-                       c("All","Regulator","Regulatee","Reader","Writer","Eraser",unique(Table3$Target)))
+                       c("All","Reader","Writer","Eraser",unique(Table3$Target)))
     ),
     #Column 3#####################################
     column(3,selectInput("spes",
@@ -40,19 +40,19 @@ fluidPage(
    column(3,
          selectInput("celline",
                      "Cell lines:",
-                     c("All",unique(Table3$Cell_line))
+                     c("All","S2","Hek293T","MEF","Mouse 3T3L1","Mouse Mid Brain","A549","Hela Cell","Mouse ESC", "HEF")
          )
   ),
   #Column 3######################################
   column(3,
          selectInput("teq",
                     "Technique",
-                     c("No",unique(Table3$Technique))
+                     c("All",unique(Table3$Technique))
        )
 ),
    #Column 4######################################
 column(3,
-       selectInput("statsig",
+       selectInput("stat_sig",
                    "Statistical significance",
                    c("No filter","p < .05","p < .01","fdr < .05","fdr < .01")
        )
@@ -82,7 +82,7 @@ fluidRow(
   column(3,
          selectInput("motif",
                      "Motif restriction",
-                     c("Yes","No")
+                     c("No filter","Motif restriction")
          )
   ),
   #Column 4######################################

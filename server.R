@@ -1,13 +1,12 @@
 function(input, output) {
-  tb1 <- eventReactive(input$button,{Tb1(Target = input$pro,
-                                         Modification = input$mod,
-                                         Species = input$spes,
-                                         RNA_type = input$rtyp,
-                                         RNA_region = input$rreg,
-                                         Gene_ID = input$gene,
-                                         Include_Liftover = input$lift,
-                                         Motif_restriction = input$motif
-                                         
+  tb1 <- eventReactive(input$button,{Tb1(
+    idx_3 = Into_var(paste(
+      paste(input$mod,input$pro,input$spes,input$lift,input$celline,input$teq,sep = "_&")
+      ,"_",sep = "")),
+      idx_2 = Into_var(paste(
+          paste(input$rtyp,input$rreg,input$motif,stat_tf(input$stat_sig),input$consis,sep = "_&")
+          ,"_",sep = "")),
+    Gene_ID = input$gene
   )
 }
 )
