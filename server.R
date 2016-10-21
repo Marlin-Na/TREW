@@ -4,7 +4,7 @@ function(input, output) {
       paste(input$mod,input$pro,input$spes,input$lift,input$celline,input$teq,sep = "_&")
       ,"_",sep = "")),
       idx_2 = Into_var(paste(
-          paste(input$rtyp,input$rreg,input$motif,stat_tf(input$stat_sig),input$consis,sep = "_&")
+          paste(input$rtyp,input$rreg,input$motif,stat_tf(input$stat_sig),input$consis,input$stop,sep = "_&")
           ,"_",sep = "")),
     Gene_ID = input$gene
   )

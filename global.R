@@ -192,6 +192,9 @@ Consistent_sites_only_ = Table2$Consistency > 0
 # Motif
 Motif_restriction_ = Table2$Distance_ConsensusMotif < 10
 
+# Stop codon
+On_top_stop_codon_ = Table2$Distance_StopCodon < 10
+
 # RNA region
 UTR5_ = Table2$Overlap_UTR5
 CDS_ = Table2$Overlap_CDS
