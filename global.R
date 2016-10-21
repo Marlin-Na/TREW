@@ -25,7 +25,7 @@ Tb1 <- function(idx_3 = TRUE,
   # Select Genes.
   hit_idx <- grepl(Gene_ID, Table2$Gene_ID, ignore.case = TRUE)
   
-  idx2 <-  hit_idx & rep(idx3,idx_3to2)
+  idx2 <-  idx2 & hit_idx & rep(idx3,idx_3to2)
   
   # Merge the table.
   idx2[which(is.na(idx2))] <- FALSE
@@ -40,7 +40,7 @@ Tb1 <- function(idx_3 = TRUE,
                Table3[rep(1:dim(Table3)[1],
                           idx_3to1)[which(idx1)],])
   cat("Tb1 run once\n")
-  Tb1
+  Tb1[,c(2,1,39,33,34,35,31,6,5,3,4,32,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,36,37,38,40,41,42,43)]
 }
 
 count.x <- function(tb1.x,tb2.y){
@@ -52,21 +52,15 @@ count.x <- function(tb1.x,tb2.y){
   hits
 }
 
-Tb2 <- function(Tb1,Test = FALSE){
+Tb2 <- function(Tb1){
   Tb1 <- Tb1[!duplicated(Tb1$Meth_Site_ID),]
   Tb2 <- unique(data.frame(Target = Tb1$Target,
                            Gene_ID = Tb1$Gene_ID, 
                            Target_type = Tb1$Target_type, 
                            Modification = Tb1$Modification))
-  Tb2$Record_num <- count.x(Tb1,Tb2)
-  Tb2$Consistent_num <- count.x(Tb1[which(Tb1$Consistency > 0),],Tb2)
+  Record_num <- count.x(Tb1,Tb2)
   Tb2$Positive_num <- count.x(Tb1[which(Tb1$Diff_p_value < .05),],Tb2)
-  Tb2$Positive_percent <- paste(round(100*(Tb2$Positive_num/Tb2$Record_num),2),"%",sep = "")
-  if(Test){
-    binom_list <- apply(Tb2[,c("Positive_num","Record_num")],1,function(x) binom.test(x[1],x[2],p = 0.2654169))
-    Tb2$binom_p <- sapply(binom_list,function(x) x$p.value)
-    Tb2$binom_CI <- sapply(binom_list,function(x) paste("[",round(x$conf.int[1],3),",",round(x$conf.int[2],3),"]", sep = ""))
-  }else{}
+  Tb2$Positive_percent <- paste(round(100*(Tb2$Positive_num/Record_num),2),"%",sep = "")
   cat("Tb2 run once\n")
   Tb2
 }
@@ -80,7 +74,6 @@ Tb3 <- function(Tb1,Tb2,Select_Number = 1:dim(Tb2)[1],Return_All = "No")
   Tb3 <- Tb1[which(Tb1$Target %in% Tb2_s$Target & 
                      Tb1$Modification %in% Tb2_s$Modification &
                      Tb1$Gene_ID %in% Tb2_s$Gene_ID),]
-  Tb3 <- Tb3[,c(1,2,32,31,12,1,6,5,3,4,13,41,33,34,35,36,39,40,42,9,10,15,16,11,14,17,18,19,20,21,22,23,24,25,26,27,28,38,43,37)]
   cat("Tb3 run once\n")
   Tb3
 }
@@ -119,7 +112,7 @@ Tb_DT <- function(Tb,collab,main = NULL)
                 ))
 }
 
-##### Functions to prepare index for filters
+##### Functions to prepare index for filters ----------------
 
 Into_var <- function(x) gsub(" ","_", x)
 stat_tf <- function(x) gsub("< .","less",x)

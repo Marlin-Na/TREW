@@ -13,10 +13,10 @@ function(input, output) {
   tb2 <- reactive({Tb2(tb1())})
   
   output$table <- DT::renderDataTable(Tb_DT(tb2(), 
-                                            main = "Summary Table(select rows to show specific)",
-                                      collab = c("Target","Gene_ID"," Tagret_type","Modification", "Record_#","Consistent_#","Positive_#","Positive_%")),
+                                            main = "Summary Table (select rows to show specific ones)",
+                                      collab = c("Regulator","Target_Gene"," Type","Mark","Positive_#","Reliability")),
                                       server = TRUE)
-  
+   
   tb3 <- eventReactive(input$table_rows_selected,{Tb3(Tb1 = tb1(),
                                                       Tb2 = tb2(),
                                                       Select_Number = as.numeric(input$table_rows_selected))})

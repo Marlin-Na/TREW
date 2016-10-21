@@ -1,5 +1,7 @@
 fluidPage(
-  titlePanel("TREW_BASIC"),
+  titlePanel("TREW: search epitranscriptomic target of reader, eraser, and writer"),
+  br(),
+  
 #Fluid Row 1#====================================================================================================================================================
   fluidRow(
     #Column 1#####################################
@@ -86,8 +88,8 @@ fluidRow(
          )
   ),
   #Column 4######################################
-  column(3,textInput("gene", "Genes(GeneSymbol):", width = 600, placeholder = "All genes when input nothing"),
-         actionButton("button", "Submit")
+  column(3,textInput("gene", "Genes(GeneSymbol):", width = 600, placeholder = "Please input gene symbol."),
+         actionButton("button", "Search")
   )
 ),
 
@@ -101,8 +103,17 @@ fluidRow(
   ),
   #Column 2#####################################
   column(6,
-   DT::dataTableOutput("table2"),
-   downloadButton('downloadData', 'Download complete specific table (by all rows on summary table)'))
+   DT::dataTableOutput("table2")
+)
+),
+
+#Fluid row 4#====================================================================================================================================================
+
+fluidRow(
+column(2),
+column(10,
+downloadButton('downloadData', 'Download all the results returned by the query (including those not selected).')
+)
 )
 # #==================================================End fluid Page===============================================================
 )
