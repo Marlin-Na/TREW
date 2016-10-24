@@ -100,6 +100,13 @@ conditionalPanel(
                        c("No filter","On top stop codon")
            )
     )
+  ),
+  
+  fluidRow(
+    column(2),
+    column(10,
+           downloadButton('downloadData', 'Download all the results returned by the query (including those not selected).')
+    )
   )
 ),
 
@@ -116,16 +123,10 @@ fluidRow(
   column(6,
    DT::dataTableOutput("table2")
 )
-),
+)
 
 #Fluid row 4#====================================================================================================================================================
 
-fluidRow(
-column(2),
-column(10,
-downloadButton('downloadData', 'Download all the results returned by the query (including those not selected).')
-)
-)
 # #==================================================End fluid Page===============================================================
 )
 
