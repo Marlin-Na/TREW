@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-#setwd("/Users/weizhen/Desktop/Research/RNA\ methylation\ Target\ Database/5.\ Shiny_complete")
-=======
 # setwd("/Users/weizhen/Desktop/Research/RNA\ methylation\ Target\ Database/5.\ Shiny_complete")
->>>>>>> origin/master
 library(shiny)
 library(DT)
 library(readr)
@@ -87,13 +83,8 @@ Tb3 <- function(Tb1,Tb2,Select_Number = 1:dim(Tb2)[1],Return_All = "No")
 
 Tb_DT <- function(Tb,collab,main = NULL,responsive = "Responsive")
 {
-<<<<<<< HEAD
   DT::datatable(Tb, 
                 rownames = TRUE, 
-=======
-  DT::datatable(Tb,
-                rownames= FALSE,
->>>>>>> origin/master
                 colnames = collab,
                 caption = main,
                 filter = list(position = "bottom",clear = FALSE),
@@ -279,7 +270,7 @@ getHighLight <- function (SelectedRow,
 
 
 getTracks <- function (DforSelectedRow,
-                       PrimaryTracks = 'gene_model' # 'DNA,gene_model'
+                       PrimaryTracks = 'gene_model', # 'DNA,gene_model'
                        datasetCol = 'Source_ID') {
     DforSelectedRow[ ,datasetCol] %>%
         unique %>%
