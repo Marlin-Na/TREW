@@ -2,6 +2,7 @@
 library(shiny)
 library(DT)
 library(readr)
+library(dplyr)
 Table1 <- read_tsv("Table1.txt")
 Table2 <- read_tsv("Table2.txt")
 Table3 <- read_tsv("Table3.txt")
@@ -13,27 +14,27 @@ Tb1 <- function(idx_3 = TRUE,
                 idx_2 = TRUE,
                 Gene_ID = "."
                 )
-{ 
+{
   # Generate idx3 & idx2
     idx3 <- eval(parse(text = idx_3))
     idx2 <- eval(parse(text = idx_2))
-  
+
   # length correction
     if (length(idx2) == 1) idx2 = rep(idx2,nrow(Table2))
     if (length(idx3) == 1) idx3 = rep(idx3,nrow(Table3))
-    
+
   # Select Genes.
   hit_idx <- grepl(Gene_ID, Table2$Gene_ID, ignore.case = TRUE)
-  
+
   idx2 <-  idx2 & hit_idx & rep(idx3,idx_3to2)
-  
+
   # Merge the table.
   idx2[which(is.na(idx2))] <- FALSE
-  
+
   idx1 <- rep(idx2,idx_2to1)
-  
+
   if(sum(idx2) == 0){stop("Not found your required sites.")}
-  
+
   Tb1 <- cbind(Table1[which(idx1),],
                Table2[rep(which(idx2),
                           idx_2to1[which(idx2)]),],
@@ -55,8 +56,8 @@ count.x <- function(tb1.x,tb2.y){
 Tb2 <- function(Tb1){
   Tb1 <- Tb1[!duplicated(Tb1$Meth_Site_ID),]
   Tb2 <- unique(data.frame(Target = Tb1$Target,
-                           Gene_ID = Tb1$Gene_ID, 
-                           Target_type = Tb1$Target_type, 
+                           Gene_ID = Tb1$Gene_ID,
+                           Target_type = Tb1$Target_type,
                            Modification = Tb1$Modification))
   Record_num <- count.x(Tb1,Tb2)
   Tb2$Positive_num <- count.x(Tb1[which(Tb1$Diff_p_value < .05),],Tb2)
@@ -70,8 +71,8 @@ Tb2 <- function(Tb1){
 Tb3 <- function(Tb1,Tb2,Select_Number = 1:dim(Tb2)[1],Return_All = "No")
 {
   Tb2_s <- Tb2[Select_Number,]
-  
-  Tb3 <- Tb1[which(Tb1$Target %in% Tb2_s$Target & 
+
+  Tb3 <- Tb1[which(Tb1$Target %in% Tb2_s$Target &
                      Tb1$Modification %in% Tb2_s$Modification &
                      Tb1$Gene_ID %in% Tb2_s$Gene_ID),]
   cat("Tb3 run once\n")
@@ -80,8 +81,8 @@ Tb3 <- function(Tb1,Tb2,Select_Number = 1:dim(Tb2)[1],Return_All = "No")
 
 Tb_DT <- function(Tb,collab,main = NULL)
 {
-  DT::datatable(Tb, 
-                rownames= FALSE, 
+  DT::datatable(Tb,
+                rownames= FALSE,
                 colnames = collab,
                 caption = main,
                 filter = list(position = "bottom",clear = FALSE),
@@ -202,12 +203,9 @@ miRNATS_ = Table2$Overlap_miRNATS
 
 ##### Functions for generating Jbrowse UI  -------------------------------
 
-# df.genes <- readRDS('dataframe_genes.Rds')
-
-getAvlGenomesFromGene <- function (GeneID, DfGenes = df.genes) {
-    avl.genomes <- DfGenes %>%
-        dplyr::filter(gene_id == GeneID) %>%
-        dplyr::select(genome_assembly) %>%
+getAvlGenomes <- function (Df, genomeCol = 'Genome_assembly') {
+    avl.genomes <- Df[,genomeCol] %>%
+        unique %>%    # Exclude NA values here??
         as.character
 
     species <-
@@ -222,35 +220,59 @@ getAvlGenomesFromGene <- function (GeneID, DfGenes = df.genes) {
 
 ## The genome should be specified by user from available genomes.
 
-getDfGene <- function (GeneID, Genome, DfGenes = df.genes) {
-    df.gene <- DfGenes %>%
-        dplyr::filter(gene_id == GeneID & genome_assembly == Genome) 
-
-    return(df.gene) # Should be of length one
+getSelectedRow <- function(whichrow, Df) {
+    Df[whichrow, ] %>%  # DT return names when the table have rownames
+    return
 }
 
-getChromosome <- function (DfGene) {
-    chr.gene <- DfGene$seqnames
-    return(chr.gene)
+getGenome <- function(SelectedRow, genomeCol = 'Genome_assembly') {
+    genome <- SelectedRow[ ,genomeCol] %>%
+        as.character %>%
+    return
 }
 
-getRange <- function (DfGene, resizeFactor = 1.5) {
-    width <- DfGene$width
-    start <- DfGene$start - round(((resizeFactor-1)/2)*width)
-    end <- DfGene$end + round(((resizeFactor-1)/2)*width)
+getGene <- function (SelectedRow, geneCol = 'Gene_ID') {
+    gene <- SelectedRow[ ,geneCol] %>%
+        as.character %>%
+    return
+}
+
+getChromosome <- function (SelectedRow, chromosomeCol = 'Chromosome') {
+    chromosome <- SelectedRow[ ,chromosomeCol] %>%
+        as.character %>%
+    return
+}
+
+getRange <- function (SelectedRow,
+                      resizeFactor = 1.5,
+                      startCol = 'Range_start', widthCol = 'Range_width') {
+    start <- SelectedRow[ ,startCol] %>% as.numeric
+    width <- SelectedRow[ ,widthCol] %>% as.numeric
+    end <- start + end - 1
+
+    rgstart <- start - round(((resizeFactor-1)/2)*width)
+    rgend <- end + round(((resizeFactor-1)/2)*width)
+
     range <- paste0(start,'..',end)
     return(range)
 }
 
-getHighLight <- function (DfGene) {
-    start <- DfGene$start
-    end <- DfGene$end
+getHighLight <- function (SelectedRow,
+                          resizeFactor = 1.5,
+                          startCol = 'Range_start', widthCol = 'Range_width') {
+    start <- SelectedRow[ ,startCol] %>% as.numeric
+    width <- SelectedRow[ ,widthCol] %>% as.numeric
+    end <- start + end - 1
+
     range <- paste0(start,'..',end)
     return(range)
 }
 
-getTracks <- function (Datasets, PrimaryTracks = 'gene_model') { # 'DNA,gene_model'
-    Datasets %>%
+
+getTracks <- function (DforSelectedRow,
+                       PrimaryTracks = 'gene_model' # 'DNA,gene_model'
+                       datasetCol = 'Source_ID') {
+    DforSelectedRow[ ,datasetCol] %>%
         unique %>%
         paste(collapse = ',') %>%
         paste0(',', PrimaryTracks) %>%
@@ -299,7 +321,8 @@ getIframeJbrowse <-
     tags$div(
         id = div_id,
         style = div_style
-    )
+    ) %>%
+    return
 }
 
 
