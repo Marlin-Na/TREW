@@ -14,7 +14,8 @@ function(input, output) {
   
   output$table <- DT::renderDataTable(Tb_DT(tb2(), 
                                             main = "Summary Table (select rows to show specific ones)",
-                                      collab = c("Regulator","Target_Gene"," Type","Mark","Positive_#","Reliability")),
+                                      collab = c("Regulator","Target_Gene"," Type","Mark","Positive_#","Reliability"),
+                                      responsive = NULL),
                                       server = TRUE)
    
   tb3 <- eventReactive(input$table_rows_selected,{Tb3(Tb1 = tb1(),
@@ -32,4 +33,7 @@ function(input, output) {
     }
   )
 }
+
+
+
 

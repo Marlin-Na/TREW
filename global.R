@@ -1,4 +1,4 @@
-setwd("/Users/weizhen/Desktop/Research/RNA\ methylation\ Target\ Database/5.\ Shiny_complete")
+#setwd("/Users/weizhen/Desktop/Research/RNA\ methylation\ Target\ Database/5.\ Shiny_complete")
 library(shiny)
 library(DT)
 library(readr)
@@ -41,7 +41,7 @@ Tb1 <- function(idx_3 = TRUE,
                           idx_3to1)[which(idx1)],])
   cat("Tb1 run once\n")
   Tb1[,c(2,1,39,33,34,35,31,6,5,3,4,32,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,36,37,38,40,41,42,43)]
-}
+  }
 
 count.x <- function(tb1.x,tb2.y){
   tb2.y <- tb2.y[,c(1,2)]
@@ -62,6 +62,7 @@ Tb2 <- function(Tb1){
   Tb2$Positive_num <- count.x(Tb1[which(Tb1$Diff_p_value < .05),],Tb2)
   Tb2$Positive_percent <- paste(round(100*(Tb2$Positive_num/Record_num),2),"%",sep = "")
   cat("Tb2 run once\n")
+  rownames(Tb2) <- 1:nrow(Tb2)
   Tb2
 }
 
@@ -75,39 +76,35 @@ Tb3 <- function(Tb1,Tb2,Select_Number = 1:dim(Tb2)[1],Return_All = "No")
                      Tb1$Modification %in% Tb2_s$Modification &
                      Tb1$Gene_ID %in% Tb2_s$Gene_ID),]
   cat("Tb3 run once\n")
+  rownames(Tb3) <- 1:nrow(Tb3)
   Tb3
 }
 
-Tb_DT <- function(Tb,collab,main = NULL)
+Tb_DT <- function(Tb,collab,main = NULL,responsive = "Responsive")
 {
   DT::datatable(Tb, 
-                rownames= FALSE, 
+                rownames = TRUE, 
                 colnames = collab,
                 caption = main,
                 filter = list(position = "bottom",clear = FALSE),
-                style = 'bootstrap',
-                class = 'cell-border stripe',
+                #style = 'bootstrap',
+                #class = 'cell-border stripe',
                 selection = list(mode = 'single', selected = c(1), target = 'row') ,
-                extensions = c("Scroller","ColReorder","Buttons","FixedHeader","FixedColumns","Responsive"),
+                extensions = c("Scroller","ColReorder","Buttons","FixedHeader","FixedColumns",responsive),
                 options = list(
-                  scrollX = TRUE,
+                  searchHighlight = TRUE,
                   deferRender = TRUE,
+                  scrollX = TRUE,
                   scroller = TRUE,
                   scrollY = 400,
-                  dom = 'Brt',
+                  dom = 'Brftip',
                   autoWidth=TRUE,
                   fixedHeader = TRUE,
                   lengthMenu = list(c(10, 50, -1), c('10', '50', 'All')),
                   ColReorder = TRUE,
                   buttons = list(
                       I('colvis'),
-                      'copy',
-                      'print',
-                      list(
-                        extend = 'collection',
-                        buttons = c('csv', 'excel'),
-                        text = 'Download'
-                      )
+                      'copy'
                     )
                 ))
 }
@@ -122,11 +119,11 @@ stat_tf <- function(x) gsub("< .","less",x)
 All_ = TRUE
 
 #Modification
-hmrC_ = Table3$Target == "hmrC"
-m1A_ = Table3$Target == "m1A"
-m6A_ = Table3$Target == "m6A"
-Psi_ = Table3$Target == "Psi"
-m5C_ = Table3$Target == "m5C"
+hmrC_ = Table3$Modification == "hmrC"
+m1A_ = Table3$Modification == "m1A"
+m6A_ = Table3$Modification == "m6A"
+Psi_ = Table3$Modification == "Psi"
+m5C_ = Table3$Modification == "m5C"
 
 #Factors
 dTet_ = Table3$Target == "dTet"

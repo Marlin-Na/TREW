@@ -1,25 +1,26 @@
-fluidPage(
+fluidPage(theme = "Yeti.css",
+navbarPage(title = 'TREW',
+  tabPanel('Query',
   titlePanel("TREW: search epitranscriptomic target of reader, eraser, and writer"),
-  br(),
-  textInput("gene", "Genes(GeneSymbol):", width = 600, placeholder = "Please input gene symbol."),
+  hr(),
+  textInput("gene", NULL, width = 600, placeholder = "Please input gene symbol."),
   actionButton("button", "Search"),
-  actionButton("option", "More options"),
-  br(),
+  actionButton("more", "More options."),
 #Fluid Row 1#====================================================================================================================================================
 conditionalPanel(
-  condition = "input.option % 2 == 1",
-  br(),
+  condition = "input.more % 2 == 1",
+  hr(),
   fluidRow(
     #Column 1#####################################
     column(3,
            selectInput("mod",
-                       "Modifications:",
+                       "Marks:",
                        c("All",unique(Table3$Modification)))
     ),
     #Column 2#####################################
     column(3,
            selectInput("pro",
-                       "Proteins:",
+                       "Regulators:",
                        c("All","Reader","Writer","Eraser",unique(Table3$Target)))
     ),
     #Column 3#####################################
@@ -44,46 +45,43 @@ conditionalPanel(
                        c("All","mRNA","lncRNA","sncRNA","tRNA","miRNA")
            )
     ),
-    #Column 2#####################################
+    #Column 2######################################
+    column(3,
+           selectInput("rreg",
+                       "RNA regions:",
+                       c("All","UTR5","CDS","UTR3","miRNATS")
+           )
+    ),
+    #Column 3#####################################
     column(3,
            selectInput("celline",
                        "Cell lines:",
                        c("All","S2","Hek293T","MEF","Mouse 3T3L1","Mouse Mid Brain","A549","Hela Cell","Mouse ESC", "HEF")
            )
     ),
-    #Column 3######################################
+    #Column 4######################################
     column(3,
            selectInput("teq",
                        "Technique",
                        c("All",unique(Table3$Technique))
            )
-    ),
-    #Column 4######################################
+    )
+),
+  #Fluid row 3#====================================================================================================================================================
+  fluidRow(
+    #Column 1#####################################
     column(3,
            selectInput("stat_sig",
                        "Statistical significance",
                        c("No filter","p < .05","p < .01","fdr < .05","fdr < .01")
            )
-    )
-  )
-  ,
-  
-  #Fluid row 3#====================================================================================================================================================
-  
-  fluidRow(
-    #Column 1#####################################
+    ),
+    #Column 2#####################################
     column(3,
            selectInput("consis",
                        "Consistency",
                        c("No filter","Consistent sites only")
                        
-           )
-    ),
-    #Column 2#####################################
-    column(3,
-           selectInput("rreg",
-                       "RNA regions:",
-                       c("All","UTR5","CDS","UTR3","miRNATS")
            )
     ),
     #Column 3######################################
@@ -103,16 +101,20 @@ conditionalPanel(
   ),
   
   fluidRow(
-    column(2),
-    column(10,
+    br(),
+    column(12,
            downloadButton('downloadData', 'Download all the results returned by the query (including those not selected).')
     )
   )
 ),
 
-
+conditionalPanel(
+condition = "input.button >= 1",
+hr(),
+h3("Query results:"),
 br()
-,
+),
+
 #Fluid row 3#====================================================================================================================================================
 fluidRow(
   #Column 1#####################################
@@ -123,11 +125,20 @@ fluidRow(
   column(6,
    DT::dataTableOutput("table2")
 )
-)
+),
 
 #Fluid row 4#====================================================================================================================================================
-
+conditionalPanel(
+  condition = "input.button >= 1",
+hr(),
+htmltools::a("All Rights Reserved.")
+)
+),
+tabPanel('Help',
+         includeMarkdown("documentation.md")
+)
 # #==================================================End fluid Page===============================================================
+)
 )
 
 

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title></title>
+
+<script src="documentation_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="documentation_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="documentation_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="documentation_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="documentation_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="documentation_files/highlight/default.css"
+      type="text/css" />
+<script src="documentation_files/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="www/Yeti.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="documentation_files/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<h1 align="center">
+<code>What is TREW database?</code>
+</h1>
+<div align="center">
+<p><img src="fig1.png" width = "643" height = "327" alt= "aaa"></p>
+</div>
+<p><strong>TREW</strong> is an acroname for the epitranscriptomic <strong>T</strong>arget of <strong>R</strong>eader, <strong>E</strong>raser, and <strong>W</strong>riter. It is a project of online service prividing the query, visualization, and download of the epitranscriptomic target information from high throughput evidence. The TREW database collects 602230 genomic evidences for the genomic locations of epitranscriptomic target sites of 14 regulators on 5 different modifications.</p>
+<hr/>
+<h3>
+<ol style="list-style-type: decimal">
+<li>Use the database query function.</li>
+</ol>
+</h3>
+<div align="left">
+<p><img src="fig4.png" width = "563" height = "102" alt= "aaa"></p>
+</div>
+<p>The database query can be simply used by input the <strong>gene symbol from NCBI</strong> into the query bar. A vague match of the gene symbol is conducted by default. The server will return 2 tables, the first table on the left contains the summary information of the relationship between the query genes and the epitranscriptomic regulator. Each row in the left table represents the existence of recorded evidence between the gene and regulator. The rows of the left table can be selected, and the selected rows will show its detailed genomic information at the table on the right.</p>
+<ol style="list-style-type: decimal">
+<li>The explanation of the collumn information in the <strong>left table</strong>.</li>
+</ol>
+<ul>
+<li><p><code>Regulator</code>: The regulator of the epitranscriptomic target.</p></li>
+<li><p><code>Target_Gene</code>: The gene targeted by the regulator.</p></li>
+<li><p><code>Type</code>: The regulation type of the regulator, can be reader, writer, or eraser.</p></li>
+<li><p><code>Mark</code>: The type of modification that the regulator acts on.</p></li>
+<li><p><code>Positive_#</code>: The number of positive sites recorded in the database. For MeRIP and RNA Bisulfite data, The positive evidence is defined by the significant differential methylated (fisher exact p value &lt; .05) sites between control and perterbation group in the direction of theoratical expected. For other data types, all the recorded sites are considered to be positive. Users can apply more rigrious filters(ex. by fdr) on the statistical significane to tackle with the multiple hypothesis test issues.</p></li>
+<li><p><code>Reliability</code>: The Positive_# divided by the total number of sites that has the perterbation in the expected direction.</p></li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>The explanation of the collumn information in the <strong>right table</strong>.</li>
+</ol>
+<ul>
+<li><p><code>Meth_Site_ID</code>: The id of the methylation target sites used in the database.</p></li>
+<li><p><code>Meth_Range_ID</code>: The id of the ranges used in the database.</p></li>
+</ul>
+<p>P.S. Each target sites could include multiple ranges in the MeRIP data which the peak is called from exomePeak, and each row in this table represents one genomic range, so, for a given site, it can corresponds to multiple rows in the right table. For other data forms, the relashionships between sites and ranges are one to one.</p>
+<p>For the rest of column information in the right table, please refer to the documentation of the SQL database.</p>
+<ul>
+<li><p>Question: How can I query the result of All the genes?</p></li>
+<li><p>Answer: <strong>To search all of the genes, you can input nothing and click search, or you can input <code>.</code> and click search.</strong></p></li>
+</ul>
+<hr/>
+<h3>
+<ol start="2" style="list-style-type: decimal">
+<li>Apply specific filters on the query.</li>
+</ol>
+</h3>
+<div align="left">
+<p><img src="fig3.png" width = "535" height = "107" alt= "aaa"></p>
+</div>
+<p><strong>12 select bars</strong> can be shown after clicking the <code>More options</code> button. Users can define their filters and add restrictions to the returned query results. Below is the explanation for the contents of each of the select bars.</p>
+<ul>
+<li><p><code>Marks</code>: The types of RNA modifications.</p></li>
+<li><p><code>Regulators</code>: The roles or names of the regulators.</p></li>
+<li><p><code>Species</code>: The species of the sample source.</p></li>
+<li><p><code>Include liftover</code>: Weather include the liftOver sites from mm10 to hg19, default is include.</p></li>
+<li><p><code>RNA types</code>: The type of RNA that the target resides.</p></li>
+<li><p><code>RNA regions</code>: The local region of the targeted RNA.</p></li>
+<li><p><code>Cell lines</code>: The cell line of the source sample.</p></li>
+<li><p><code>Technique</code>: Select 5 categories of the high throughput experiments applied in this database.</p></li>
+<li><p><code>Statistical significance</code>: Select the filter used for the statistical significance of the differential methylation in MeRIP and RNA bisulfite samples; by selecting any filter, only positive results will be reported in the tables below.</p></li>
+<li><p><code>Consistency</code>: Wheather select the sites that are consistent between multiple technical/biological replicates. The defination of consistent is that the methylation fold change direction is consistent between pairs of biological/technical replicate.</p></li>
+</ul>
+<p>For sample with no biological/technical replicate, their reported sites are considered to be inconsistent.</p>
+<ul>
+<li><p><code>Motif restriction</code>: Wheather to choose sites that are only approximate (within 10 nt) to the consensus motif. This argument is only effective for 2 types of methylations: m6A and hmrC, they have reported motifs DRACH and UCUCC.</p></li>
+<li><p><code>Stop codon restriction</code> : Wheather to choose sites that only approximate (within 10 nt) to the stop codon.</p></li>
+</ul>
+<hr/>
+<h3>
+<ol start="3" style="list-style-type: decimal">
+<li>Download the complete table returned by the query.</li>
+</ol>
+</h3>
+<div align="left">
+<p><img src="fig2.png" width = "536" height = "79" alt= "aaa"></p>
+</div>
+<p>The information of the returned tables can be downloaded through a download button. The download button is visible under the select bars after click the button of More Options. The downloaded table is in csv format.</p>
+<p>The downloaded table contains merged information of the left table and the right table, each row of the downloaded table represents a range on the genome. The scope of the sites contained in the download can be tailored by the select bar filters.</p>
+<hr/>
+<h3>
+<ol start="4" style="list-style-type: decimal">
+<li>Use the original SQL database.</li>
+</ol>
+</h3>
+<div align="center">
+<p><img src="fig5.png" width = "573" height = "346" alt= "aaa"></p>
+</div>
+<p>The TREW database is public accessible through <strong>MySQL</strong> and <strong>sqlite</strong> forms. The diagram above demonstrates the structure of the database. The information contained under Each field is explained below.</p>
+<h4>
+<ol style="list-style-type: decimal">
+<li>Table Genome_Location.</li>
+</ol>
+</h4>
+<ul>
+<li><code>Meth_Range_ID</code>: The uniqe ID given each genomic ranges in this database.</li>
+<li><code>Meth_Site_ID</code>: The uniqe ID given each modification sites.</li>
+<li><code>Range_start</code>: The start of the range.</li>
+<li><code>Range_width</code>: The width of the range.</li>
+<li><code>Strand</code>: The strand of the range.</li>
+<li><code>Chromosome</code>: The chromosome of the range.</li>
+<li><code>Note_t1</code>: Note for table 1.</li>
+</ul>
+<h4>
+<ol start="2" style="list-style-type: decimal">
+<li>Table Sites_Info.</li>
+</ol>
+</h4>
+<ul>
+<li><code>Methylation_ID</code>: Reference on the <code>Meth_Site_ID</code> of the first table.</li>
+<li><code>Diff_p_value</code>: The p value returned by the inference of differential methylation in MeRIP and RNA bisulfite samples.</li>
+<li><code>Diff_fdr</code>: The false discovery rate computed based on Benjamini-Hochberg method within each sample.</li>
+<li><code>Diff_log2FoldChange</code>: The log2 transformation of the methylation level fold changes.</li>
+<li><code>Gene_ID</code>: The NCBI gene symbol for the methylated genes.</li>
+<li><code>Source_ID</code>: The unique ID given by each set of high throughput experiment used in this database.</li>
+<li><code>Consistency</code>: Wheather the fold change directions are consistent between mutiple biological/technical replicates.</li>
+<li><code>Log2_RPKM_wt</code>: Expression level (RPKM in input data) for the genes under wt condition.</li>
+<li><code>Log2_RPKM_Treated</code>: Expression level for the genes under Treated condition.</li>
+<li><code>Overlap_UTR5</code>: Wheather the site overlapped with 5’UTR (5’untranslated region).</li>
+<li><code>Overlap_CDS</code>: Wheather the site overlapped with CDS (protein coding sequence).</li>
+<li><code>Overlap_UTR3</code>: Wheather the site overlapped with UTR3 (3’untranslated region).</li>
+<li><code>Distance_ConsensusMotif</code>: The distance from the site to its nearest consensus motif.</li>
+<li><code>Distance_StartCodon</code>: The distance from the site to its nearest start codon.</li>
+<li><code>Distance_StopCodon</code>: The distance from the site to its nearest stop codon.</li>
+<li><code>Note_t2</code>: Note for table 2.</li>
+</ul>
+<h4>
+<ol start="3" style="list-style-type: decimal">
+<li>Table Source_Info</li>
+</ol>
+</h4>
+<ul>
+<li><code>DataSet_ID</code>: Reference on the <code>Source_ID</code> of the second table.</li>
+<li><code>Genome_assembly</code>: The reference genome.</li>
+<li><code>Modification</code>: The type of modification or marks.</li>
+<li><code>Technique</code>: The high throughput method.</li>
+<li><code>Target</code>: The protein regulator act on the modification.</li>
+<li><code>Target_type</code>: The type of the protein regulator(either writer, eraser, or reader).</li>
+<li><code>Perturbation</code>: The method of the perturbation of the protein for the treated group.</li>
+<li><code>Date_of_process</code>: The date which the raw data is processed.</li>
+<li><code>Paper</code>: The publication which generated the sample.</li>
+<li><code>Cell_line</code>: The Cell line used by the sample.</li>
+<li><code>Treatment</code>: The additional treatment other than protein perturbation.</li>
+<li><code>Species</code>: The species of the sample.</li>
+<li><code>LiftOver</code>: Indicate The data is liftOver from other species to human.</li>
+<li><code>Computation_pepline</code>: The computational pepline used to process the raw data.</li>
+<li><code>Note_t3</code>:</li>
+</ul>
+<h4>
+<ol start="4" style="list-style-type: decimal">
+<li>Table Raw_data_records</li>
+</ol>
+</h4>
+<ul>
+<li><code>GEO_RUN</code>: The GEO accession for the individual fastq data.</li>
+<li><code>Data_ID</code>: Reference on the <code>Source_ID</code> of the second table.</li>
+<li><code>IP_Input</code>: Wheather the sample is Input or IP for MeRIP.</li>
+<li><code>Genotype</code>: Wheather the sample is control or treated.</li>
+<li><code>Replicate</code>: How many biological/technical replicates does the sample involve.</li>
+</ul>
+<hr/>
+<h3>
+<ol start="5" style="list-style-type: decimal">
+<li>Contact Information</li>
+</ol>
+</h3>
+<div>
+<p>Xi’an Jiaotong-Liverpool University; 111 Ren’ai Road; Suzhou Dushu Lake Science and Education Innovation District; Suzhou Industrial Park; Suzhou; P. R. China; 215123;</p>
+</div>
+<div>
+<p>JiaMeng: <a href="mailto:Jia.Meng@xjtlu.edu.cn">Jia.Meng@xjtlu.edu.cn</a>; ZhenWei: <a href="mailto:Zhen.Wei@xjtlu.edu.cn">Zhen.Wei@xjtlu.edu.cn</a></p>
+</div>
+<hr/>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
