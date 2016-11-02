@@ -1,4 +1,23 @@
 fluidPage(theme = "Yeti.css",
+<<<<<<< HEAD
+navbarPage(title = 'TREW',
+  tabPanel('Query',
+  titlePanel("TREW: search epitranscriptomic targets of reader, eraser and writer"),
+  hr(),
+  textInput("gene", NULL, width = 600, placeholder = "Please input gene symbol."),
+  actionButton("button", "Search"),
+  actionButton("more", "More options."),
+#Fluid Row 1#====================================================================================================================================================
+conditionalPanel(
+  condition = "input.more % 2 == 1",
+  hr(),
+  fluidRow(
+    #Column 1#####################################
+    column(3,
+           selectInput("mod",
+                       "Marks:",
+                       c("All",unique(Table3$Modification)))
+=======
   navbarPage(title = 'TREW',
     tabPanel('Query',
       titlePanel("TREW: search epitranscriptomic target of reader, eraser, and writer"),
@@ -158,6 +177,7 @@ fluidPage(theme = "Yeti.css",
         hr(),
         htmltools::a("All Rights Reserved.")
       )
+>>>>>>> parent of 55d7d0f... An update
     ),
 
     tabPanel('Help',

@@ -2,7 +2,11 @@
 library(shiny)
 library(DT)
 library(readr)
+<<<<<<< HEAD
 library(magrittr)
+=======
+library(dplyr)
+>>>>>>> parent of 55d7d0f... An update
 Table1 <- read_tsv("Table1.txt")
 Table2 <- read_tsv("Table2.txt")
 Table3 <- read_tsv("Table3.txt")
@@ -238,7 +242,10 @@ getHighLight <- function (Start, Width,
     start <- Start %>% as.numeric
     width <- Width %>% as.numeric
     end <- start + width - 1
+<<<<<<< HEAD
+=======
 
+>>>>>>> parent of 55d7d0f... An update
     range <- paste0(start,'..',end)
     return(range)
 }
