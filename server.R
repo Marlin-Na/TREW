@@ -60,7 +60,7 @@ function(input, output, session) {
       choices = getAvlGenomes(tb3()[,'Genome_assembly'])
     )
     
-    tmpDfRow <- df.genes[which(df.genes$gene_id == tb2()$Gene_ID[as.numeric(input$table_rows_selected)] &
+    tmpDfRow <- df.genes[which(df.genes$gene_id == tb2()$Gene_ID[input$table_rows_selected] &
                                df.genes$genome_assembly == input$inGenome),
                          ]
 
