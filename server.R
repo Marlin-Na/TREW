@@ -1,5 +1,6 @@
 ## Predefined Arguments
 jbrowse.url <- 'http://180.208.58.19/jbrowse'  # "./jbrowse"
+df.genes <- readRDS('all.dataframe_genes.Rds')
 
 
 
@@ -44,8 +45,9 @@ function(input, output, session) {
 
   DTinfo <- reactiveValues()
 
+  ## When the table of grouped sites is clicked
   observeEvent(input$table_rows_selected, {
-    ## For test
+    ## For testing purpose
     print(paste('T_rows_selected class:',class(input$table_rows_selected)))
     print(paste('T_rows_selected value:',input$table_rows_selected))
     
@@ -58,21 +60,23 @@ function(input, output, session) {
       choices = getAvlGenomes(tb3()[,'Genome_assembly'])
     )
     
-## TO Read the gene range from a preprocessed file    
-#
-#    DTinfo$Genome <- input$inGenome
-#    DTinfo$Chromosome <- 
-#    DTinfo$Start <- 
-#    DTinfo$Width <- 
-#    DTinfo$Tracks <- getTracks(
-#      DataSets = tb3()[,'Source_ID'],
-#      PrimaryTracks = 'gene_model'
-#    )
+    tmpDfRow <- df.genes[which(df.genes$gene_id == tb2()$Gene_ID[as.numeric(input$table_rows_selected)] &
+                               df.genes$genome_assembly == input$inGenome),
+                         ]
+
+    DTinfo$Genome <- input$inGenome
+    DTinfo$Chromosome <- tmpDfRow$seqnames %>% as.character
+    DTinfo$Start <- tmpDfRow$start
+    DTinfo$Width <- tmpDfRow$width
+    DTinfo$Tracks <- getTracks(
+      DataSets = tb3()[,'Source_ID'],
+      PrimaryTracks = 'gene_model'
+    )
   })
 
   ## When the table of sites is clicked
   observeEvent(input$table2_rows_selected, {
-    ## For test
+    ## For testing purpose
     print(paste('T2_rows_selected class:',class(input$table2_rows_selected)))
     print(paste('T2_rows_selected value:',input$table2_rows_selected))
       
@@ -87,8 +91,8 @@ function(input, output, session) {
     
     DTinfo$Genome <- input$inGenome
     DTinfo$Chromosome <- tb3()[input$table2_rows_selected,'Chromosome']
-    DTinfo$Start <- tb3()[input$table2_rows_selected,'Range_Start']
-    DTinfo$Width <- tb3()[input$table2_rows_selected,'Range_Width']
+    DTinfo$Start <- tb3()[input$table2_rows_selected,'Range_start']
+    DTinfo$Width <- tb3()[input$table2_rows_selected,'Range_width']
     DTinfo$Tracks <- getTracks(
       DataSets = tb3()[input$table2_rows_selected,'Source_ID'],
       PrimaryTracks = 'DNA,gene_model'

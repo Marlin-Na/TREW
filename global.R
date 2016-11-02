@@ -2,7 +2,7 @@
 library(shiny)
 library(DT)
 library(readr)
-library(dplyr)
+library(magrittr)
 Table1 <- read_tsv("Table1.txt")
 Table2 <- read_tsv("Table2.txt")
 Table3 <- read_tsv("Table3.txt")
