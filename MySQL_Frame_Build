@@ -1,0 +1,98 @@
+cd /Users/weizhen/Desktop/Research/RNA\ methylation\ Target\ Database/2.\ Database\ build/5.\ Database\ Filling\ -\ MySQL
+
+mysqld
+
+mysql -uroot -p
+
+#CREATE USER 'ZhenWei'@'%' IDENTIFIED BY 'xy908581'; 
+#mysql -u ZhenWei -p
+
+CREATE DATABASE TREW;
+USE TREW;
+
+CREATE TABLE Genome_Location ( 
+Meth_Range_ID INT NOT NULL, 
+Meth_Site_ID INT NOT NULL,
+Range_start INT,
+Range_width INT,
+Strand CHAR(1),
+Chromosome VARCHAR(255),
+Note_t1 VARCHAR(255),
+KEY (Meth_Site_ID),
+PRIMARY KEY (Meth_Range_ID)
+);
+
+CREATE TABLE Sites_Info ( 
+Methylation_ID INT NOT NULL, 
+Diff_p_value FLOAT,
+Diff_fdr FLOAT,
+Diff_log2FoldChange FLOAT,
+Gene_ID VARCHAR(255),
+Source_ID VARCHAR(255) NOT NULL,
+Consistency VARCHAR(255),
+Overlap_UTR5 VARCHAR(255),
+Overlap_CDS VARCHAR(255),
+Overlap_UTR3 VARCHAR(255),
+Distance_ConsensusMotif INT,
+Distance_StartCodon INT,
+Distance_StopCodon INT,
+Note_t2 VARCHAR(255),
+KEY (Source_ID),
+PRIMARY KEY (Methylation_ID),
+FOREIGN KEY (Methylation_ID)
+      REFERENCES Genome_Location(Meth_Site_ID)
+);
+
+CREATE TABLE Source_Info ( 
+DataSet_ID VARCHAR(255) NOT NULL,
+Genome_assembly VARCHAR(255),
+Modification VARCHAR(255),
+Technique VARCHAR(255),
+Target VARCHAR(255),
+Target_type VARCHAR(255),
+Perturbation VARCHAR(255),
+Date_of_process VARCHAR(255),
+Paper VARCHAR(255),
+Cell_line VARCHAR(255),
+Treatment VARCHAR(255),
+Species VARCHAR(255),
+LiftOver VARCHAR(255),
+Computation_pepline VARCHAR(255),
+Note_t3 VARCHAR(255),
+KEY (DataSet_ID),
+PRIMARY KEY (DataSet_ID),
+FOREIGN KEY (DataSet_ID)
+      REFERENCES Sites_Info (Source_ID)
+);
+
+
+CREATE TABLE Raw_data_records ( 
+GEO_RUN SMALLINT NOT NULL,
+Data_ID VARCHAR(255) NOT NULL,
+IP_Input VARCHAR(255),
+Genotype VARCHAR(255),
+Replicate VARCHAR(255),
+FOREIGN KEY (Data_ID)
+      REFERENCES Source_Info (DataSet_ID)
+);
+
+SHOW tables;
+
+DESCRIBE Genome_Location;
+DESCRIBE Raw_data_records;
+DESCRIBE Sites_Info;
+DESCRIBE Source_Info;
+
+DROP table Genome_Location;
+DROP table Raw_data_records;
+DROP table Sites_Info;
+DROP table Source_Info;
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'xy908581' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+
+mysql -uroot -p --bind-address=127.0.0.1 
+
+mysql -u root -h 203.90.213.199 -p 
+
+/usr/local/var/mysql
