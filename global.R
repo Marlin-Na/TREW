@@ -220,12 +220,9 @@ miRNATS_ = Table2$Overlap_miRNATS
 
 ##### Functions for generating Jbrowse UI  -------------------------------
 
-# df.genes <- readRDS('dataframe_genes.Rds')
-
-getAvlGenomesFromGene <- function (GeneID, DfGenes = df.genes) {
-    avl.genomes <- DfGenes %>%
-        dplyr::filter(gene_id == GeneID) %>%
-        dplyr::select(genome_assembly) %>%
+-getAvlGenomes <- function (Genomes) { # vector
+-    avl.genomes <- Genomes %>%
+-        unique %>%    # TODO Exclude NA values here??
         as.character
 
     species <-
@@ -240,50 +237,47 @@ getAvlGenomesFromGene <- function (GeneID, DfGenes = df.genes) {
 
 ## The genome should be specified by user from available genomes.
 
-getDfGene <- function (GeneID, Genome, DfGenes = df.genes) {
-    df.gene <- DfGenes %>%
-        dplyr::filter(gene_id == GeneID & genome_assembly == Genome) 
+getRange <- function (Start, Width,
+                      resizeFactor = 1.5) {
+    start <- Start %>% as.numeric
+    width <- Width %>% as.numeric
+    end <- start + width - 1
 
-    return(df.gene) # Should be of length one
+    rgstart <- start - round(((resizeFactor-1)/2)*width)
+    rgend <- end + round(((resizeFactor-1)/2)*width)
+
+    range <- paste0(rgstart,'..',rgend)
+    return(range)
 }
 
-getChromosome <- function (DfGene) {
-    chr.gene <- DfGene$seqnames
-    return(chr.gene)
-}
+getHighLight <- function (Start, Width,
+                          resizeFactor = 1.5) {
+    start <- Start %>% as.numeric
+    width <- Width %>% as.numeric
+    end <- start + width - 1
 
-getRange <- function (DfGene, resizeFactor = 1.5) {
-    width <- DfGene$width
-    start <- DfGene$start - round(((resizeFactor-1)/2)*width)
-    end <- DfGene$end + round(((resizeFactor-1)/2)*width)
     range <- paste0(start,'..',end)
     return(range)
 }
 
-getHighLight <- function (DfGene) {
-    start <- DfGene$start
-    end <- DfGene$end
-    range <- paste0(start,'..',end)
-    return(range)
-}
-
-getTracks <- function (Datasets, PrimaryTracks = 'gene_model') { # 'DNA,gene_model'
-    Datasets %>%
+getTracks <- function (DataSets,  # A vector
+                       PrimaryTracks = 'gene_model')  # 'DNA,gene_model'
+    DataSets %>%
         unique %>%
         paste(collapse = ',') %>%
-        paste0(',', PrimaryTracks) %>%
+        paste0(PrimaryTracks, ',', .) %>%
     return
-}
+
 
 # A sample url is "http://180.208.58.19/jbrowse/?data=data/hg19&loc=chr6:30309362..30310357&tracks=DNA,all_m6A,gene_model&highlight=chr6:30309513..30310230&nav=0&tracklist=0&overview=0"
 getLinkJbrowse <-
     function (Genome,                      # e.g. 'hg19'
               Chromosome,                  # e.g. 'chr6'
               Range = '',                  # e.g. '30309362..30310357'
-              Tracks = 'DNA,gene_model',   # e.g. 'DNA,gene_model,all_m6A'
               HighLight = '',              # e.g. '30309513..30310230'
+              Tracks = 'DNA,gene_model',   # e.g. 'DNA,gene_model,all_m6A'
               BaseUrl = './jbrowse',       # e.g. 'http://180.208.58.19/jbrowse'
-              showNav = F,
+              showNav = T,
               showTracklist = F,
               showOverview = F)
 {
@@ -317,7 +311,8 @@ getIframeJbrowse <-
     tags$div(
         id = div_id,
         style = div_style
-    )
+    ) %>%
+    return
 }
 
 

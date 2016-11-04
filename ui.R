@@ -123,6 +123,32 @@ fluidRow(
 )
 ),
 
+#  Jbrowse     ============================================
+
+conditionalPanel(
+  condition = "input.button >= 1",
+  
+  hr(),
+  h3("Browser:"),
+  br(),
+  
+  fluidRow(
+    # Jbrowse navigation
+    column(2,
+      selectInput(
+        inputId = 'inGenome',
+        label = 'Available Genomes',
+        choices = 'Not Available'
+      )
+    ),
+    # Jbrowse UI
+    column(10,
+      uiOutput(outputId = 'outJbrowse')
+    )
+  )
+),
+
+
 #Fluid row 4#====================================================================================================================================================
 conditionalPanel(condition = "input.button >= 1",
 fluidRow(
