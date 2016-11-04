@@ -220,10 +220,10 @@ miRNATS_ = Table2$Overlap_miRNATS
 
 ##### Functions for generating Jbrowse UI  -------------------------------
 
--getAvlGenomes <- function (Genomes) { # vector
--    avl.genomes <- Genomes %>%
--        unique %>%    # TODO Exclude NA values here??
-        as.character
+getAvlGenomes <- function (Genomes) { # vector
+    avl.genomes <- Genomes %>%
+        unique %>%    # TODO Exclude NA values here??
+       as.character
 
     species <-
         ifelse(avl.genomes == 'hg19', 'Homo sapiens (hg19)',

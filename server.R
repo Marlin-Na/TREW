@@ -1,3 +1,8 @@
+## Predefined Arguments
+jbrowse.url <- 'http://180.208.58.19/jbrowse'  # "./jbrowse"
+df.genes <- readRDS('all.dataframe_genes.Rds')
+
+
 function(input, output,session) {
   tb1 <- eventReactive(input$button,{Tb1(
     idx_3 = Into_var(paste(
