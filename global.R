@@ -1,12 +1,7 @@
-# setwd("/Users/weizhen/Desktop/Research/RNA\ methylation\ Target\ Database/5.\ Shiny_complete")
+setwd("/Users/weizhen/Desktop/Research/RNA\ methylation\ Target\ Database/5.\ Shiny_complete")
 library(shiny)
 library(DT)
 library(readr)
-<<<<<<< HEAD
-library(magrittr)
-=======
-library(dplyr)
->>>>>>> parent of 55d7d0f... An update
 Table1 <- read_tsv("Table1.txt")
 Table2 <- read_tsv("Table2.txt")
 Table3 <- read_tsv("Table3.txt")
@@ -18,33 +13,35 @@ Tb1 <- function(idx_3 = TRUE,
                 idx_2 = TRUE,
                 Gene_ID = "."
                 )
-{
+{ 
   # Generate idx3 & idx2
     idx3 <- eval(parse(text = idx_3))
     idx2 <- eval(parse(text = idx_2))
-
+  
   # length correction
     if (length(idx2) == 1) idx2 = rep(idx2,nrow(Table2))
     if (length(idx3) == 1) idx3 = rep(idx3,nrow(Table3))
-
+    
   # Select Genes.
   hit_idx <- grepl(Gene_ID, Table2$Gene_ID, ignore.case = TRUE)
-
+  
   idx2 <-  idx2 & hit_idx & rep(idx3,idx_3to2)
-
+  
   # Merge the table.
   idx2[which(is.na(idx2))] <- FALSE
-
+  
   idx1 <- rep(idx2,idx_2to1)
-
+  
   if(sum(idx2) == 0){stop("Not found your required sites.")}
-
+  
   Tb1 <- cbind(Table1[which(idx1),],
                Table2[rep(which(idx2),
                           idx_2to1[which(idx2)]),],
                Table3[rep(1:dim(Table3)[1],
                           idx_3to1)[which(idx1)],])
   cat("Tb1 run once\n")
+  cat(idx_3,"\n")
+  cat(idx_2,"\n")
   Tb1[,c(2,1,39,33,34,35,31,6,5,3,4,32,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,36,37,38,40,41,42,43)]
   }
 
@@ -60,15 +57,15 @@ count.x <- function(tb1.x,tb2.y){
 Tb2 <- function(Tb1){
   Tb1 <- Tb1[!duplicated(Tb1$Meth_Site_ID),]
   Tb2 <- unique(data.frame(Target = Tb1$Target,
-                           Gene_ID = Tb1$Gene_ID,
-                           Target_type = Tb1$Target_type,
+                           Gene_ID = Tb1$Gene_ID, 
+                           Target_type = Tb1$Target_type, 
                            Modification = Tb1$Modification))
   Record_num <- count.x(Tb1,Tb2)
   Tb2$Positive_num <- count.x(Tb1[which(Tb1$Diff_p_value < .05),],Tb2)
   Tb2$Positive_percent <- paste(round(100*(Tb2$Positive_num/Record_num),2),"%",sep = "")
   cat("Tb2 run once\n")
   rownames(Tb2) <- 1:nrow(Tb2)
-  Tb2
+  Tb2[which(Tb2$Positive_num != 0),]
 }
 
 ###Table 3 is the specific table that must be inferred from tb1 and tb2
@@ -76,8 +73,8 @@ Tb2 <- function(Tb1){
 Tb3 <- function(Tb1,Tb2,Select_Number = 1:dim(Tb2)[1],Return_All = "No")
 {
   Tb2_s <- Tb2[Select_Number,]
-
-  Tb3 <- Tb1[which(Tb1$Target %in% Tb2_s$Target &
+  
+  Tb3 <- Tb1[which(Tb1$Target %in% Tb2_s$Target & 
                      Tb1$Modification %in% Tb2_s$Modification &
                      Tb1$Gene_ID %in% Tb2_s$Gene_ID),]
   cat("Tb3 run once\n")
@@ -85,7 +82,12 @@ Tb3 <- function(Tb1,Tb2,Select_Number = 1:dim(Tb2)[1],Return_All = "No")
   Tb3
 }
 
-Tb_DT <- function(Tb,collab,main = NULL,responsive = "Responsive")
+Tb_DT <- function(Tb, 
+                   collab, 
+                    main = NULL, 
+                     responsive = "Responsive",
+                       select_setting = list(mode = 'single', selected = 1, target = 'row'))
+                  
 {
   DT::datatable(Tb, 
                 rownames = TRUE, 
@@ -94,7 +96,7 @@ Tb_DT <- function(Tb,collab,main = NULL,responsive = "Responsive")
                 filter = list(position = "bottom",clear = FALSE),
                 #style = 'bootstrap',
                 #class = 'cell-border stripe',
-                selection = list(mode = 'single', selected = c(1), target = 'row') ,
+                selection = select_setting,
                 extensions = c("Scroller","ColReorder","Buttons","FixedHeader","FixedColumns",responsive),
                 options = list(
                   searchHighlight = TRUE,
@@ -103,21 +105,32 @@ Tb_DT <- function(Tb,collab,main = NULL,responsive = "Responsive")
                   scroller = TRUE,
                   scrollY = 400,
                   dom = 'Brftip',
-                  autoWidth=TRUE,
+                  autoWidth= TRUE,
                   fixedHeader = TRUE,
                   lengthMenu = list(c(10, 50, -1), c('10', '50', 'All')),
                   ColReorder = TRUE,
-                  buttons = list(
-                      I('colvis'),
-                      'copy'
+                  buttons =
+                    list(
+                      list(
+                        extend = 'collection',
+                        buttons = c('csv', 'excel'),
+                        text = 'Download'
+                      ),
+                      I('colvis')
                     )
-                ))
+                 ))
 }
 
 ##### Functions to prepare index for filters ----------------
 
 Into_var <- function(x) gsub(" ","_", x)
 stat_tf <- function(x) gsub("< .","less",x)
+
+rreg_tf <- function(x) {
+ vec <- c("All","5'UTR","CDS","3'UTR","miRNA target sites")
+ vec2 <- c("All","UTR5","CDS","UTR3","miRNATS")
+ vec2[match(x,vec)]
+}
 
 #Variable enumeration
 #Table3_length
@@ -145,8 +158,8 @@ YTHDF1_ = Table3$Target == "YTHDF1"
 DNMT2_ = Table3$Target == "DNMT2"
 NSUN2_ = Table3$Target == "NSUN2"
 Fto_ = Table3$Target == "Fto"
-Reader_ = YTHDF1_&YTHDF2_&YTHDC1_
-Eraser_ = ALKBH_&Fto_
+Reader_ = YTHDF1_|YTHDF2_|YTHDC1_
+Eraser_ = ALKBH_|Fto_
 Writer_ = !(Reader_|Eraser_)
 
 #Species
@@ -207,9 +220,12 @@ miRNATS_ = Table2$Overlap_miRNATS
 
 ##### Functions for generating Jbrowse UI  -------------------------------
 
-getAvlGenomes <- function (Genomes) { # vector
-    avl.genomes <- Genomes %>%
-        unique %>%    # TODO Exclude NA values here??
+# df.genes <- readRDS('dataframe_genes.Rds')
+
+getAvlGenomesFromGene <- function (GeneID, DfGenes = df.genes) {
+    avl.genomes <- DfGenes %>%
+        dplyr::filter(gene_id == GeneID) %>%
+        dplyr::select(genome_assembly) %>%
         as.character
 
     species <-
@@ -224,49 +240,50 @@ getAvlGenomes <- function (Genomes) { # vector
 
 ## The genome should be specified by user from available genomes.
 
-getRange <- function (Start, Width,
-                      resizeFactor = 1.5) {
-    start <- Start %>% as.numeric
-    width <- Width %>% as.numeric
-    end <- start + width - 1
+getDfGene <- function (GeneID, Genome, DfGenes = df.genes) {
+    df.gene <- DfGenes %>%
+        dplyr::filter(gene_id == GeneID & genome_assembly == Genome) 
 
-    rgstart <- start - round(((resizeFactor-1)/2)*width)
-    rgend <- end + round(((resizeFactor-1)/2)*width)
-
-    range <- paste0(rgstart,'..',rgend)
-    return(range)
+    return(df.gene) # Should be of length one
 }
 
-getHighLight <- function (Start, Width,
-                          resizeFactor = 1.5) {
-    start <- Start %>% as.numeric
-    width <- Width %>% as.numeric
-    end <- start + width - 1
-<<<<<<< HEAD
-=======
+getChromosome <- function (DfGene) {
+    chr.gene <- DfGene$seqnames
+    return(chr.gene)
+}
 
->>>>>>> parent of 55d7d0f... An update
+getRange <- function (DfGene, resizeFactor = 1.5) {
+    width <- DfGene$width
+    start <- DfGene$start - round(((resizeFactor-1)/2)*width)
+    end <- DfGene$end + round(((resizeFactor-1)/2)*width)
     range <- paste0(start,'..',end)
     return(range)
 }
 
-getTracks <- function (DataSets,  # A vector
-                       PrimaryTracks = 'gene_model')  # 'DNA,gene_model'
-    DataSets %>%
+getHighLight <- function (DfGene) {
+    start <- DfGene$start
+    end <- DfGene$end
+    range <- paste0(start,'..',end)
+    return(range)
+}
+
+getTracks <- function (Datasets, PrimaryTracks = 'gene_model') { # 'DNA,gene_model'
+    Datasets %>%
         unique %>%
         paste(collapse = ',') %>%
-        paste0(PrimaryTracks, ',', .) %>%
+        paste0(',', PrimaryTracks) %>%
     return
+}
 
 # A sample url is "http://180.208.58.19/jbrowse/?data=data/hg19&loc=chr6:30309362..30310357&tracks=DNA,all_m6A,gene_model&highlight=chr6:30309513..30310230&nav=0&tracklist=0&overview=0"
 getLinkJbrowse <-
     function (Genome,                      # e.g. 'hg19'
               Chromosome,                  # e.g. 'chr6'
               Range = '',                  # e.g. '30309362..30310357'
-              HighLight = '',              # e.g. '30309513..30310230'
               Tracks = 'DNA,gene_model',   # e.g. 'DNA,gene_model,all_m6A'
+              HighLight = '',              # e.g. '30309513..30310230'
               BaseUrl = './jbrowse',       # e.g. 'http://180.208.58.19/jbrowse'
-              showNav = T,
+              showNav = F,
               showTracklist = F,
               showOverview = F)
 {
@@ -300,8 +317,7 @@ getIframeJbrowse <-
     tags$div(
         id = div_id,
         style = div_style
-    ) %>%
-    return
+    )
 }
 
 

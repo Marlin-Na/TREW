@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<!-- saved from url=(0124)file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+
+<meta name="generator" content="pandoc">
+
+
+
+
+<title></title>
+
+<script src="./documentation_files/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="./documentation_files/bootstrap.min.css" rel="stylesheet">
+<script src="./documentation_files/bootstrap.min.js"></script>
+<script src="./documentation_files/html5shiv.min.js"></script>
+<script src="./documentation_files/respond.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet" href="./documentation_files/default.css" type="text/css">
+<script src="./documentation_files/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="./documentation_files/Yeti.css" type="text/css">
+
+<script type="text/javascript" src="./documentation_files/MathJax.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+
+<body><div id="MathJax_Message" style="display: none;"></div>
+
+<style type="text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="./documentation_files/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<h1 align="center">
+What is TREW database?
+</h1>
+<div align="center">
+<p><img src="./documentation_files/fig1.png" width="643" height="327" alt="aaa"></p>
+</div>
+<p><strong>TREW</strong> is an acronym for the epitranscriptomic <strong>T</strong>arget of <strong>R</strong>eader, <strong>E</strong>raser and <strong>W</strong>riter. It is a project of online service providing the query, visualization, and downloading of the epitranscriptomic target information from high throughput evidences. The TREW database collects 602230 genomic evidences for the genomic locations of epitranscriptomic target sites of 14 regulators on 5 different modifications.</p>
+<section>
+<h4 id="top">
+Contents:
+</h4>
+<div>
+
+</div>
+<div>
+<ol style="list-style-type: decimal">
+<li><a href="file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html#section1">Use the database query function.</a>
+</li></ol></div>
+<section>
+<div>
+<ul>
+<li><a href="file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html#section1.1"> Information in the left table </a>
+</li></ul></div>
+<div>
+<ul>
+<li><a href="file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html#section1.2"> Information in the right table </a>
+</li></ul></div>
+</section>
+<div>
+<ol start="2" style="list-style-type: decimal">
+<li><a href="file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html#section2">Apply specific filters on the query.</a>
+</li></ol></div>
+
+<div>
+<ol start="3" style="list-style-type: decimal">
+<li><a href="file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html#section3">Download the complete table returned by the query.</a>
+</li></ol></div>
+
+<div>
+<ol start="4" style="list-style-type: decimal">
+<li><a href="file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html#section4">Use the original SQL database.</a>
+</li></ol></div>
+<section>
+<div>
+<ul>
+<li><a href="file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html#section4.1"> Table Genome_Location. </a>
+</li></ul></div>
+<div>
+<ul>
+<li><a href="file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html#section4.2"> Table Sites_Info. </a>
+</li></ul></div>
+<div>
+<ul>
+<li><a href="file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html#section4.3"> Table Source_Info. </a>
+</li></ul></div>
+<div>
+<ul>
+<li><a href="file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html#section4.4"> Table Raw_data_records. </a>
+</li></ul></div>
+
+
+
+
+
+
+
+
+
+
+<hr>
+<section id="section1">
+<h3>
+1.Instructions of query function.
+</h3>
+</section>
+<div align="left">
+<p><img src="./documentation_files/fig4.png" width="563" height="102" alt="aaa"></p>
+</div>
+<p>The database query can be simply used by inputting the <strong>gene symbol from NCBI</strong> into the query bar. A fuzzy match of the gene symbol will be conducted by default. The server will return 2 tables. The first table on the left contains the summary information of the relationship between the queried genes and the epitranscriptomic regulators. Each row in the left table represents the existence of recorded evidence between the gene and regulator. The rows of the left table can be selected, and the selected rows will show their detailed genomic information in the table on the right.</p>
+<section id="section1.1">
+<p><br></p>
+<h4>
+The explanation of the column information in the left table.
+</h4>
+</section>
+<ul>
+<li><p><code>Regulator</code>: The regulator of the epitranscriptomic target.</p></li>
+<li><p><code>Target_Gene</code>: The gene targeted by the regulator.</p></li>
+<li><p><code>Type</code>: The regulation type of the regulator, which can be reader, writer, or eraser.</p></li>
+<li><p><code>Mark</code>: The type of modification that the regulator acts on.</p></li>
+<li><p><code>Positive_#</code>: The number of positive sites recorded in the database. For MeRIP and RNA Bisulfite data, the positive evidence is defined by the significant differential methylated (fisher exact p value &lt; .05) sites between control and perturbation group in the direction of theoretical expectation. For other data types, all the recorded sites are considered to be positive. Users can apply more rigorous filters(ex. by fdr) on the statistical significance to tackle with the multiple hypothesis test issues.</p></li>
+<li><p><code>Reliability</code>: The Positive_# divided by the total number of sites that has the perturbation in the expected direction.</p></li>
+</ul>
+<p><br></p>
+<section id="section1.2">
+<h4>
+The explanation of the column information in the right table.
+</h4>
+</section>
+<ul>
+<li><p><code>Meth_Site_ID</code>: The id of the methylation target sites used in the database.</p></li>
+<li><p><code>Meth_Range_ID</code>: The id of the ranges used in the database.</p></li>
+</ul>
+<p>P.S. Each target sites could include multiple ranges in the MeRIP data in which the peak is called from exomePeak, and each row in this table represents one genomic range. So, for a given site, it can correspond to multiple rows in the right table. For other data forms, the relashionships between sites and ranges are one-to-one.</p>
+<p>For the rest of column information in the right table, please refer to the documentation of <a href="file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html#section4">the SQL database</a>.</p>
+<p><br></p>
+<ul>
+<li><strong>If you need to query the result of all the genes, please input a dot (“.”) in the query bar or just leave it blank. Then click Search.</strong></li>
+</ul>
+<hr>
+<section id="section2">
+<h3>
+<ol start="2" style="list-style-type: decimal">
+<li>Apply specific filters on the query.</li>
+</ol>
+</h3>
+</section>
+<div align="left">
+<p><img src="./documentation_files/fig3.png" width="535" height="107" alt="aaa"></p>
+</div>
+<p><strong>12 select bars</strong> can be shown after clicking the <code>More options</code> button. Users can define their filters and add restrictions to the returned query results. The following are is the explanations for the contents of each of the select bars.</p>
+<ul>
+<li><p><code>Marks</code>: The types of RNA modifications.</p></li>
+<li><p><code>Regulators</code>: The roles or names of the regulators.</p></li>
+<li><p><code>Species</code>: The species of the sample source.</p></li>
+<li><p><code>Include liftover</code>: Whether include the liftOver sites from mm10 to hg19 (default: include).</p></li>
+<li><p><code>RNA types</code>: The type of RNA that the target resides.</p></li>
+<li><p><code>RNA regions</code>: The local region of the targeted RNA.</p></li>
+<li><p><code>Cell lines</code>: The cell line of the source sample.</p></li>
+<li><p><code>Technique</code>: Select 5 categories of the high throughput experiments applied in this database.</p></li>
+<li><p><code>Statistical significance</code>: Select the filter used for the statistical significance of the differential methylation in MeRIP and RNA bisulfite samples; by selecting any filter, only positive results will be reported in the tables below.</p></li>
+<li><p><code>Consistency</code>: Whether select the sites that are consistent between multiple technical/biological replicates. The definition of consistent is that the methylation fold change direction is consistent between pairs of biological/technical replicate.</p></li>
+</ul>
+<p>For sample with no biological/technical replicate, their reported sites are considered to be inconsistent.</p>
+<ul>
+<li><p><code>Motif restriction</code>: Whether to choose sites that are only approximate (within 10 nt) to the consensus motif. This argument is only effective for 2 types of methylations: m6A and hmrC, which have reported motifs DRACH and UCUCC.</p></li>
+<li><p><code>Stop codon restriction</code> : Whether to choose sites that only approximate (within 10 nt) to the stop codon.</p></li>
+</ul>
+<hr>
+<section id="section3">
+<h3>
+<ol start="3" style="list-style-type: decimal">
+<li>Download the complete table returned by the query.</li>
+</ol>
+</h3>
+</section>
+<div align="left">
+<p><img src="./documentation_files/fig2.png" width="536" height="79" alt="aaa"></p>
+</div>
+<p>The information of the returned tables can be downloaded by clicking a download button. The download button is visible under the tables after click the search button. The downloaded table is in csv format.</p>
+<p>The downloaded table contains merged information of the left table and the right table. Each row of the downloaded table represents a range on the genome. The scope of the sites contained in the download can be tailored by the select bar filters.</p>
+<p>For more download supports, please visit <a id="download.page" href="file://localhost/Users/weizhen/Desktop/Research/RNA%20methylation%20Target%20Database/5.%20Shiny_complete/documentation.html#" class="action-button">here</a>.</p>
+<hr>
+<section id="section4">
+<h3>
+<ol start="4" style="list-style-type: decimal">
+<li>Use the original SQL database.</li>
+</ol>
+</h3>
+</section>
+<div align="center">
+<p><img src="./documentation_files/fig5.png" width="573" height="346" alt="aaa"></p>
+</div>
+<p>The TREW database is public accessible through <strong>MySQL</strong> and <strong>sqlite</strong> forms. The diagram above demonstrates the structure of the database. The information contained under each field is explained below.</p>
+<p><br></p>
+<h4 id="section4.1">
+<ol style="list-style-type: decimal">
+<li>Table Genome_Location.</li>
+</ol>
+</h4>
+<table style="width:94%;" class="table table-condensed">
+<colgroup>
+<col width="30%">
+<col width="63%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Field names</th>
+<th align="left">description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>Meth_Range_ID</code></td>
+<td align="left">The unique ID given each genomic ranges in this database.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Meth_Site_ID</code></td>
+<td align="left">The unique ID given each modification sites.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Range_start</code></td>
+<td align="left">The start of the range.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Range_width</code></td>
+<td align="left">The width of the range.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Strand</code></td>
+<td align="left">The strand type of the range.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Chromosome</code></td>
+<td align="left">The chromosome of the range.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Note_t1</code></td>
+<td align="left">Note for table 1.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h4 id="section4.2">
+<ol start="2" style="list-style-type: decimal">
+<li>Table Sites_Info.</li>
+</ol>
+</h4>
+<table style="width:94%;" class="table table-condensed">
+<colgroup>
+<col width="30%">
+<col width="63%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Field names</th>
+<th align="left">description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>Methylation_ID</code></td>
+<td align="left">Reference on the <code>Meth_Site_ID</code> of the first table.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Diff_p_value</code></td>
+<td align="left">The p value returned by the inference of differential methylation in MeRIP and RNA bisulfite samples.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Diff_fdr</code>:</td>
+<td align="left">The false discovery rate computed based on Benjamini-Hochberg method within each sample.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Diff_log2FoldChange</code></td>
+<td align="left">The log2 transformation of the methylation level fold changes.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Gene_ID</code></td>
+<td align="left">The NCBI gene symbol for the methylated genes.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Source_ID</code></td>
+<td align="left">The unique ID given by each set of high throughput experiment used in this database.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Consistency</code></td>
+<td align="left">Whether the fold change directions are consistent between multiple biological/technical replicates.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Log2_RPKM_wt</code></td>
+<td align="left">Expression level (RPKM in input data) for the genes under wt condition.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Log2_RPKM_Treated</code></td>
+<td align="left">Expression level for the genes under treated condition.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Overlap_UTR5</code></td>
+<td align="left">Whether the site overlapped with 5’UTR (5’untranslated region).</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Overlap_CDS</code></td>
+<td align="left">Whether the site overlapped with CDS (protein coding sequence).</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Overlap_UTR3</code></td>
+<td align="left">Whether the site overlapped with 3’UTR (3’untranslated region).</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Distance_ConsensusMotif</code></td>
+<td align="left">The distance from the site to its nearest consensus motif.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Distance_StartCodon</code></td>
+<td align="left">The distance from the site to its nearest start codon.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Distance_StopCodon</code></td>
+<td align="left">The distance from the site to its nearest stop codon.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Note_t2</code></td>
+<td align="left">Note for table 2.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h4 id="section4.3">
+<ol start="3" style="list-style-type: decimal">
+<li>Table Source_Info.</li>
+</ol>
+</h4>
+<table style="width:94%;" class="table table-condensed">
+<colgroup>
+<col width="30%">
+<col width="63%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Field names</th>
+<th align="left">description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>DataSet_ID</code></td>
+<td align="left">Reference on the <code>Source_ID</code> of the second table.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Genome_assembly</code></td>
+<td align="left">The reference genome.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Modification</code></td>
+<td align="left">The type of modification or marks.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Technique</code></td>
+<td align="left">The high throughput method.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Target</code></td>
+<td align="left">The protein regulator act on the modification.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Target_type</code></td>
+<td align="left">The type of the protein regulator (either writer, eraser or reader).</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Perturbation</code></td>
+<td align="left">The method of the perturbation of the protein for the treated group.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Date_of_process</code></td>
+<td align="left">The date when the raw data was processed.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Paper</code></td>
+<td align="left">The publication which generated the sample.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Cell_line</code></td>
+<td align="left">The cell line used by the sample.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Treatment</code></td>
+<td align="left">The additional treatment exepts protein perturbation.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Species</code></td>
+<td align="left">The species of the sample.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>LiftOver</code></td>
+<td align="left">Indicate the data is liftOver from other species to human.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Computation_pepline</code></td>
+<td align="left">The computational pipeline used to process the raw data.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Note_t3</code></td>
+<td align="left">Note for table 3.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="section4.4">
+<ol start="4" style="list-style-type: decimal">
+<li>Table Raw_data_records.</li>
+</ol>
+</h4>
+<table style="width:93%;" class="table table-condensed">
+<colgroup>
+<col width="29%">
+<col width="63%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Field names</th>
+<th align="left">description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>GEO_RUN</code></td>
+<td align="left">The GEO accession for the individual fastq data.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Data_ID</code></td>
+<td align="left">Reference on the <code>Source_ID</code> of the second table.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>IP_Input</code></td>
+<td align="left">Whether the sample is Input or IP for MeRIP.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Genotype</code></td>
+<td align="left">Whether the sample is control or treated.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Replicate</code></td>
+<td align="left">How many biological/technical replicates does the sample involve.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p align="center">
+Xi’an Jiaotong-Liverpool University 2016 © Copyright
+</p>
+
+
+
+
+</section></section></div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+
+
+</body></html>

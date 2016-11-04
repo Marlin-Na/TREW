@@ -10,7 +10,7 @@ What is TREW database?
 </h1>
 
 <div align = center>
-<img src="./fig1.png" width = "722" height = "413" alt= "aaa">
+<img src="./fig1.png" width = "700" height = "388" alt= "aaa">
 </div>
 
 **TREW** is an acronym for the epitranscriptomic **T**arget of **R**eader, **E**raser and **W**riter. It is a project of online service providing the query, visualization, and downloading of the epitranscriptomic target information from high throughput evidences. The TREW database collects 602230 genomic evidences for the genomic locations of epitranscriptomic target sites of 14 regulators on 5 different modifications. 
@@ -24,9 +24,9 @@ What is TREW database?
  - <a href="#section1.2"> <div>Information in the right table</div> </a>
  
 <div>2.<a href="#section2">Apply specific filters on the query.</a></div>
-<div style="height:15px;"></div>
+
 <div>3.<a href="#section3">Download the complete table returned by the query.</a></div>
-<div style="height:15px;"></div>
+
 <div>4.<a href="#section4">Use the original SQL database.</a></div>
 
  - <a href="#section4.1"> <div>Table Genome_Location.</div> </a>
