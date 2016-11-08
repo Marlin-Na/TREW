@@ -152,7 +152,7 @@ function(input, output,session) {
     DTinfo$Width <- tb3()[input$table2_rows_selected,'Range_width']
     DTinfo$Tracks <- getTracks(
       DataSets = tb3()[input$table2_rows_selected,'Source_ID'],
-      PrimaryTracks = 'DNA,gene_model'
+      PrimaryTracks = 'gene_model'
     )
     
     DTinfo$RangeType <- 'site'
