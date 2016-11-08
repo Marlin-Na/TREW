@@ -1,4 +1,4 @@
-setwd("/Users/weizhen/git/TREW/TREW")
+# setwd("/Users/weizhen/git/TREW/TREW")
 library(shiny)
 library(DT)
 library(readr)
@@ -220,12 +220,9 @@ miRNATS_ = Table2$Overlap_miRNATS
 
 ##### Functions for generating Jbrowse UI  -------------------------------
 
-df.genes <- readRDS('dataframe_genes.Rds')
-
-getAvlGenomesFromGene <- function (GeneID, DfGenes = df.genes) {
-    avl.genomes <- DfGenes %>%
-        dplyr::filter(gene_id == GeneID) %>%
-        dplyr::select(genome_assembly) %>%
+getAvlGenomes <- function (Genomes) { # vector
+    avl.genomes <- Genomes %>%
+        unique %>%    # TODO Exclude NA values here??
         as.character
 
     species <-
