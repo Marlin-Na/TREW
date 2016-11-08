@@ -276,10 +276,7 @@ getLinkJbrowse <-
               Range = '',                  # e.g. '30309362..30310357'
               HighLight = '',              # e.g. '30309513..30310230'
               Tracks = 'DNA,gene_model',   # e.g. 'DNA,gene_model,all_m6A'
-              BaseUrl = './jbrowse',       # e.g. 'http://180.208.58.19/jbrowse'
-              showNav = T,
-              showTracklist = F,
-              showOverview = F)
+              BaseUrl = './jbrowse')       # e.g. 'http://180.208.58.19/jbrowse'
 {
     url <- paste0(
         BaseUrl, '/',
@@ -287,14 +284,17 @@ getLinkJbrowse <-
         '&loc=', Chromosome,
         if (Range == '') '' else paste0(':', Range),
         '&tracks=', Tracks,
-        if (HighLight == '') '' else paste0('&highlight=',Chromosome,':',HighLight),
-        if (showNav == T) '' else '&nav=0',
-        if (showTracklist == T) '' else '&tracklist=0',
-        if (showOverview == T) '' else '&overview=0'
+        if (HighLight == '') '' else paste0('&highlight=',Chromosome,':',HighLight)
     )
 
     return(url)
 }
+
+
+hide_navagation <- function(Link) paste0(Link, '&nav=0')
+hide_tracklist  <- function(Link) paste0(Link, '&tracklist=0')
+hide_overview   <- function(Link) paste0(Link, '&overview=0')
+
 
 
 getIframeJbrowse <-

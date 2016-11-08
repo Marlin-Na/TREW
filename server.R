@@ -108,7 +108,7 @@ function(input, output,session) {
   })
 
 
-  DTinfo <- reactiveValues()
+  DTinfo <- reactiveValues(Status = 0)
 
   ## When the table of grouped sites is clicked
   observeEvent(input$table_rows_selected, {
@@ -116,20 +116,21 @@ function(input, output,session) {
     print(paste('T_rows_selected class:',class(input$table_rows_selected)))
     print(paste('T_rows_selected value:',input$table_rows_selected))
     
-    DTinfo$RangeType <- 'gene'
-    
-    tmpDfRow <- df.genes[which(df.genes$gene_id == tb2()$Gene_ID[input$table_rows_selected] &
+    geneDfRow <- df.genes[which(df.genes$gene_id == tb2()$Gene_ID[input$table_rows_selected] &
                                df.genes$genome_assembly == getAvlGenomes(tb3()[ ,'Genome_assembly'])),
                          ]
-
+    
     DTinfo$Genome <- getAvlGenomes(tb3()[,'Genome_assembly'])
-    DTinfo$Chromosome <- tmpDfRow$seqnames %>% as.character
-    DTinfo$Start <- tmpDfRow$start
-    DTinfo$Width <- tmpDfRow$width
+    DTinfo$Chromosome <- geneDfRow$seqnames %>% as.character
+    DTinfo$Start <- geneDfRow$start
+    DTinfo$Width <- geneDfRow$width
     DTinfo$Tracks <- getTracks(
       DataSets = tb3()[,'Source_ID'],
       PrimaryTracks = 'gene_model'
     )
+    
+    DTinfo$RangeType <- 'gene'
+    DTinfo$Status <- DTinfo$Status + 1
   })
 
 
@@ -138,8 +139,6 @@ function(input, output,session) {
     ## For testing purpose
     print(paste('T2_rows_selected class:',class(input$table2_rows_selected)))
     print(paste('T2_rows_selected value:',input$table2_rows_selected))
-      
-    DTinfo$RangeType <- 'site'
 
     DTinfo$Genome <- getAvlGenomes(tb3()[,'Genome_assembly'])
     DTinfo$Chromosome <- tb3()[input$table2_rows_selected,'Chromosome']
@@ -149,6 +148,24 @@ function(input, output,session) {
       DataSets = tb3()[input$table2_rows_selected,'Source_ID'],
       PrimaryTracks = 'DNA,gene_model'
     )
+    
+    DTinfo$RangeType <- 'site'
+    DTinfo$Status <- DTinfo$Status + 1
+  })
+  
+  
+  reJbrowseUI <- eventReactive(DTinfo$Status,{
+      getLinkJbrowse(
+          Genome = DTinfo$Genome,
+          Chromosome = DTinfo$Chromosome,
+          Range = getRange(Start = DTinfo$Start, Width = DTinfo$Width),
+          HighLight = getHighLight(Start = DTinfo$Start, Width = DTinfo$Width),
+          Tracks = DTinfo$Tracks,
+          BaseUrl = jbrowse.url
+      ) %>%
+      hide_tracklist() %>%
+      hide_overview() %>%
+      getIframeJbrowse()
   })
 
 
@@ -156,17 +173,7 @@ function(input, output,session) {
   output$outJbrowse <- renderUI({
     # TODO: validate status
 
-    getLinkJbrowse (
-      Genome = DTinfo$Genome,
-      Chromosome = DTinfo$Chromosome,
-      Range = getRange(Start = DTinfo$Start, 
-                       Width = DTinfo$Width),
-      HighLight = getHighLight(Start = DTinfo$Start,
-                               Width = DTinfo$Width),
-      Tracks = DTinfo$Tracks,
-      BaseUrl = jbrowse.url
-    )  %>%
-    getIframeJbrowse ()
+    reJbrowseUI()
   })
 
 
