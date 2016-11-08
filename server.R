@@ -179,8 +179,8 @@ function(input, output,session) {
                                Width = DTinfo$Width),
       Tracks = DTinfo$Tracks,
       BaseUrl = jbrowse.url
-    ) %>%
-    getIframeJbrowse ()
+    ) 
+    cat("Jbrowser link run once.")
   })
 
 

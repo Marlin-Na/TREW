@@ -1,4 +1,4 @@
-#setwd("/Users/weizhen/Desktop/Research/RNA\ methylation\ Target\ Database/5.\ Shiny_complete")
+setwd("/Users/weizhen/git/TREW/TREW")
 library(shiny)
 library(DT)
 library(readr)
@@ -145,7 +145,7 @@ m5C_ = Table3$Modification == "m5C"
 
 #Factors
 dTet_ = Table3$Target == "dTet"
-ALKBH_ = Table3$Target == "ALKBH"
+ALKBH3_ = Table3$Target == "ALKBH3"
 KIAA1429_ = Table3$Target == "KIAA1429"
 METTL14_ = Table3$Target == "METTL14"
 METTL3_ = Table3$Target == "METTL3"
@@ -158,9 +158,9 @@ YTHDF1_ = Table3$Target == "YTHDF1"
 DNMT2_ = Table3$Target == "DNMT2"
 NSUN2_ = Table3$Target == "NSUN2"
 Fto_ = Table3$Target == "Fto"
-Reader_ = YTHDF1_|YTHDF2_|YTHDC1_
-Eraser_ = ALKBH_|Fto_
-Writer_ = !(Reader_|Eraser_)
+Reader_ = Table3$Target_type == "reader"
+Eraser_ = Table3$Target_type == "eraser"
+Writer_ = Table3$Target_type == "writer"
 
 #Species
 Drosophila_melanogaster_ = Table3$Species == "Drosophila melanogaster"
@@ -220,10 +220,13 @@ miRNATS_ = Table2$Overlap_miRNATS
 
 ##### Functions for generating Jbrowse UI  -------------------------------
 
-getAvlGenomes <- function (Genomes) { # vector
-    avl.genomes <- Genomes %>%
-        unique %>%    # TODO Exclude NA values here??
-       as.character
+df.genes <- readRDS('dataframe_genes.Rds')
+
+getAvlGenomesFromGene <- function (GeneID, DfGenes = df.genes) {
+    avl.genomes <- DfGenes %>%
+        dplyr::filter(gene_id == GeneID) %>%
+        dplyr::select(genome_assembly) %>%
+        as.character
 
     species <-
         ifelse(avl.genomes == 'hg19', 'Homo sapiens (hg19)',
