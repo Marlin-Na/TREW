@@ -122,8 +122,8 @@ function(input, output,session) {
     
     DTinfo$Genome <- getAvlGenomes(tb3()[,'Genome_assembly'])
     DTinfo$Chromosome <- geneDfRow$seqnames %>% as.character
-    DTinfo$Start <- geneDfRow$start
-    DTinfo$Width <- geneDfRow$width
+    DTinfo$GeneStart <- DTinfo$Start <- geneDfRow$start
+    DTinfo$GeneWidth <- DTinfo$Width <- geneDfRow$width
     DTinfo$Tracks <- getTracks(
       DataSets = tb3()[,'Source_ID'],
       PrimaryTracks = 'gene_model'
@@ -139,6 +139,12 @@ function(input, output,session) {
     ## For testing purpose
     print(paste('T2_rows_selected class:',class(input$table2_rows_selected)))
     print(paste('T2_rows_selected value:',input$table2_rows_selected))
+
+    geneDfRow <- df.genes[which(df.genes$gene_id == tb2()$Gene_ID[input$table_rows_selected] &
+                               df.genes$genome_assembly == getAvlGenomes(tb3()[ ,'Genome_assembly'])),
+                         ]
+    DTinfo$GeneStart <- geneDfRow$start
+    DTinfo$GeneWidth <- geneDfRow$width
 
     DTinfo$Genome <- getAvlGenomes(tb3()[,'Genome_assembly'])
     DTinfo$Chromosome <- tb3()[input$table2_rows_selected,'Chromosome']
@@ -158,7 +164,7 @@ function(input, output,session) {
       getLinkJbrowse(
           Genome = DTinfo$Genome,
           Chromosome = DTinfo$Chromosome,
-          Range = getRange(Start = DTinfo$Start, Width = DTinfo$Width),
+          Range = getRange(Start = DTinfo$GeneStart, Width = DTinfo$GeneWidth),
           HighLight = getHighLight(Start = DTinfo$Start, Width = DTinfo$Width),
           Tracks = DTinfo$Tracks,
           BaseUrl = jbrowse.url
