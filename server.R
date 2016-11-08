@@ -118,18 +118,11 @@ function(input, output,session) {
     
     DTinfo$RangeType <- 'gene'
     
-    updateSelectInput(
-      inputId = 'inGenome',
-      label = 'Available Genomes',
-      session = session,
-      choices = getAvlGenomes(tb3()[,'Genome_assembly'])
-    )
-    
     tmpDfRow <- df.genes[which(df.genes$gene_id == tb2()$Gene_ID[input$table_rows_selected] &
-                               df.genes$genome_assembly == input$inGenome),
+                               df.genes$genome_assembly == getAvlGenomes(tb3()[ ,'Genome_assembly'])),
                          ]
 
-    DTinfo$Genome <- input$inGenome
+    DTinfo$Genome <- getAvlGenomes(tb3()[,'Genome_assembly'])
     DTinfo$Chromosome <- tmpDfRow$seqnames %>% as.character
     DTinfo$Start <- tmpDfRow$start
     DTinfo$Width <- tmpDfRow$width
@@ -148,14 +141,7 @@ function(input, output,session) {
       
     DTinfo$RangeType <- 'site'
 
-    updateSelectInput(
-      inputId = 'inGenome',
-      label = 'Available Genomes',
-      session = session,
-      choices = getAvlGenomes(tb3()[input$table2_rows_selected,'Genome_assembly'])
-    )
-    
-    DTinfo$Genome <- input$inGenome
+    DTinfo$Genome <- getAvlGenomes(tb3()[,'Genome_assembly'])
     DTinfo$Chromosome <- tb3()[input$table2_rows_selected,'Chromosome']
     DTinfo$Start <- tb3()[input$table2_rows_selected,'Range_start']
     DTinfo$Width <- tb3()[input$table2_rows_selected,'Range_width']

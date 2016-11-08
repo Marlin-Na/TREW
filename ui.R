@@ -134,12 +134,8 @@ conditionalPanel(
   
   fluidRow(
     # Jbrowse navigation
-    column(2,
-      selectInput(
-        inputId = 'inGenome',
-        label = 'Available Genomes',
-        choices = 'Not Available'
-      )
+    column(2
+        # TODO
     ),
     # Jbrowse UI
     column(10,
