@@ -8,6 +8,7 @@ navbarPage(id = 'top.navbar',
   textInput("gene", NULL, width = 600, placeholder = "Please input gene symbol."),
   actionButton("button", "Search"),
   actionButton("more", "More options"),
+  checkboxInput('exact', 'Exact match', FALSE),
 #Fluid Row 1#====================================================================================================================================================
 conditionalPanel(
   condition = "input.more % 2 == 1",
@@ -97,7 +98,7 @@ conditionalPanel(
     column(3,
            selectInput("stop",
                        "Stop codon restriction",
-                       c("No filter","On top stop codon")
+                       c("No filter","Near stop codon")
            )
     )
   ),

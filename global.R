@@ -11,7 +11,8 @@ idx_3to1 <- read_rds("idx_3to1.rds")
 
 Tb1 <- function(idx_3 = TRUE,
                 idx_2 = TRUE,
-                Gene_ID = "."
+                Gene_ID = ".",
+                exact = FALSE
                 )
 { 
   # Generate idx3 & idx2
@@ -23,7 +24,12 @@ Tb1 <- function(idx_3 = TRUE,
     if (length(idx3) == 1) idx3 = rep(idx3,nrow(Table3))
     
   # Select Genes.
+  
+  if(exact){
+  hit_idx <- grepl(paste("^",Gene_ID,"$",sep = ""), Table2$Gene_ID)
+  }else{
   hit_idx <- grepl(Gene_ID, Table2$Gene_ID, ignore.case = TRUE)
+  }
   
   idx2 <-  idx2 & hit_idx & rep(idx3,idx_3to2)
   
@@ -208,7 +214,7 @@ Consistent_sites_only_ = Table2$Consistency > 0
 Motif_restriction_ = Table2$Distance_ConsensusMotif < 10
 
 # Stop codon
-On_top_stop_codon_ = Table2$Distance_StopCodon < 10
+Near_stop_codon_ = Table2$Distance_StopCodon < 10
 
 # RNA region
 UTR5_ = Table2$Overlap_UTR5

@@ -11,7 +11,8 @@ function(input, output,session) {
       idx_2 = Into_var(paste(
           paste(input$rtyp,rreg_tf(input$rreg),input$motif,stat_tf(input$stat_sig),input$consis,input$stop,sep = "_&")
           ,"_",sep = "")),
-    Gene_ID = input$gene
+    Gene_ID = input$gene,
+    exact = input$exact
   )
 }
 )
