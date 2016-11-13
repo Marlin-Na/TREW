@@ -9,8 +9,9 @@ function(input, output,session) {
       paste(input$mod,input$pro,input$spes,input$lift,input$celline,input$teq,sep = "_&")
       ,"_",sep = "")),
       idx_2 = Into_var(paste(
-          paste(input$rtyp,rreg_tf(input$rreg),input$motif,stat_tf(input$stat_sig),input$consis,input$stop,sep = "_&")
+          paste(input$rtyp,rreg_tf(input$rreg),input$motif,input$consis,input$stop,sep = "_&")
           ,"_",sep = "")),
+    idx_stat = stat_tf(input$stat_sig),
     Gene_ID = input$gene,
     exact = input$exact
   )
@@ -36,7 +37,7 @@ function(input, output,session) {
       paste(input$mod, '.csv', sep='') 
     },
     content = function(file) {
-      write.csv(tb1(), file)
+      write.csv(tb1()[,-c(40)], file)
     }
   )
 

@@ -1,4 +1,4 @@
-# setwd("/Users/weizhen/git/TREW/TREW")
+setwd("/Users/weizhen/git/TREW/TREW")
 library(shiny)
 library(DT)
 library(readr)
@@ -9,16 +9,28 @@ idx_2to1 <- inverse.rle(read_rds("idx_2to1.rle.rds"))
 idx_3to2 <- read_rds("idx_3to2.rds")
 idx_3to1 <- read_rds("idx_3to1.rds")
 
+# #================================================================================
+# Tb1 is a function that input 5 things
+# 1-3. The first 3 are indexes which are character vectors, and they must be string of codes that are ready to be evaluated and turn into real variables and their logical calculations.
+# 4. GeneId is a character that is taken into the R match function of regular expression --- grepl.
+# 5. Exact is an extra setting that controls wheather the GeneId should be matched exactly or allowing vague pattern match or not.
+# Tb1 will return a subsetted table but in original formatting, it merges the data in table 1, 2, and 3.
+# Also, it adds a column that is logical indicating wheather it should be filtered by the user defined statistical significance filter. 
+# We should not filter statistical significance at first because the insignificant rows are still usefull when calculating tb2.
+# #================================================================================
+
 Tb1 <- function(idx_3 = TRUE,
                 idx_2 = TRUE,
+                idx_stat = TRUE,
                 Gene_ID = ".",
                 exact = FALSE
                 )
 { 
-  # Generate idx3 & idx2
+  # Generate idx3 & idx2 & idxstat
     idx3 <- eval(parse(text = idx_3))
     idx2 <- eval(parse(text = idx_2))
-  
+    idxstat = eval(parse(text = idx_stat))
+    
   # length correction
     if (length(idx2) == 1) idx2 = rep(idx2,nrow(Table2))
     if (length(idx3) == 1) idx3 = rep(idx3,nrow(Table3))
@@ -40,16 +52,29 @@ Tb1 <- function(idx_3 = TRUE,
   
   if(sum(idx2) == 0){stop("Not found your required sites.")}
   
-  Tb1 <- cbind(Table1[which(idx1),],
-               Table2[rep(which(idx2),
-                          idx_2to1[which(idx2)]),],
-               Table3[rep(1:dim(Table3)[1],
-                          idx_3to1)[which(idx1)],])
+  idx_t1 = which(idx1)
+  idx_t2 = rep(which(idx2),idx_2to1[which(idx2)])
+  idx_t3 = rep(1:dim(Table3)[1],idx_3to1)[which(idx1)]
+  
+  Tb1 <- cbind(Table1[idx_t1,],
+               Table2[idx_t2,],
+               Table3[idx_t3,])
+  
+  Tb1$stat_idx <- idxstat[idx_t2]
+  
   cat("Tb1 run once\n")
   cat(idx_3,"\n")
   cat(idx_2,"\n")
-  Tb1[,c(2,1,39,33,34,35,31,6,5,3,4,32,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,36,37,38,40,41,42,43)]
-  }
+  Tb1[,c(2,1,39,33,34,35,31,6,5,3,4,32,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,36,37,38,40,41,42,43,45)]
+}
+
+# #================================================================================
+# count.x 
+# 1. The first argument is a tb1 "object"
+# 2. The second argument is a tb2 "object"
+# The function will return a vector that indicating how many hits collected by each row of tb2 (summary of tb1) upon the tb1 input.
+# #================================================================================
+
 
 count.x <- function(tb1.x,tb2.y){
   tb2.y <- tb2.y[,c(1,2)]
@@ -60,33 +85,59 @@ count.x <- function(tb1.x,tb2.y){
   hits
 }
 
+
+# #================================================================================
+# Tb2
+# 1. It only requires one input, a Tb1 "object".
+# 2. The function will summarize Tb1, calculate positive record # and reliabilities, then return a Tb2 "object".
+# #================================================================================
+
+
 Tb2 <- function(Tb1){
   Tb1 <- Tb1[!duplicated(Tb1$Meth_Site_ID),]
   Tb2 <- unique(data.frame(Target = Tb1$Target,
                            Gene_ID = Tb1$Gene_ID, 
                            Target_type = Tb1$Target_type, 
-                           Modification = Tb1$Modification))
+                           Modification = Tb1$Modification,
+                           stat_idx = Tb1$stat_idx))
   Record_num <- count.x(Tb1,Tb2)
   Tb2$Positive_num <- count.x(Tb1[which(Tb1$Diff_p_value < .05),],Tb2)
   Tb2$Positive_percent <- paste(round(100*(Tb2$Positive_num/Record_num),2),"%",sep = "")
   cat("Tb2 run once\n")
+  Tb2 <- Tb2[which((Tb2$Positive_num != 0) & Tb2$stat_idx), -c(5)]
   rownames(Tb2) <- 1:nrow(Tb2)
-  Tb2[which(Tb2$Positive_num != 0),]
+  Tb2
 }
 
-###Table 3 is the specific table that must be inferred from tb1 and tb2
+# #================================================================================
+# Tb2 takes 3 inputs
+# 1. Tb1: the Tb1 "object".
+# 2. Tb2: the Tb2 "object".
+# 3. Select_Number: The selected row on Tb2 returned by the UI.
+# Returning Tb3 which is the reduced table from particular row in Tb2 back to Tb1, it is essentially a subsetting on Tb1.
+# #================================================================================
 
-Tb3 <- function(Tb1,Tb2,Select_Number = 1:dim(Tb2)[1],Return_All = "No")
+Tb3 <- function(Tb1,Tb2,Select_Number = 1:dim(Tb2)[1])
 {
   Tb2_s <- Tb2[Select_Number,]
   
   Tb3 <- Tb1[which(Tb1$Target %in% Tb2_s$Target & 
                      Tb1$Modification %in% Tb2_s$Modification &
-                     Tb1$Gene_ID %in% Tb2_s$Gene_ID),]
+                     Tb1$Gene_ID %in% Tb2_s$Gene_ID), -c(40)]
   cat("Tb3 run once\n")
   rownames(Tb3) <- 1:nrow(Tb3)
   Tb3
 }
+
+# #================================================================================
+# Tb_DT takes 4 inputs
+# 1. Tb: A dataframe "object"
+# 2. collab: The collumn labelings.
+# 3. main: The table legends.
+# 4. responsive: Wheather collapse things into the "+" button if there are no space, if so it is "Responsive", else NULL.
+# 5. select_setting: Control the defaulted ways of selection in the table.
+# #================================================================================
+
 
 Tb_DT <- function(Tb, 
                    collab, 
@@ -128,15 +179,28 @@ Tb_DT <- function(Tb,
 }
 
 ##### Functions to prepare index for filters ----------------
+# #================================================================================
+# Below are basically functions that transform the input selections returned by ui into variable names of the indexes that have build already.  
+# #================================================================================
+
 
 Into_var <- function(x) gsub(" ","_", x)
-stat_tf <- function(x) gsub("< .","less",x)
+stat_tf <- function(x) {
+ vec <- c("p < .05","p < .01","fdr < .05","fdr < .01","No filter")
+ vec2 <- c("p_05_","p_01_","fdr_05_","fdr_01_","No_filter_")
+ vec2[match(x,vec)]
+}
 
 rreg_tf <- function(x) {
  vec <- c("All","5'UTR","CDS","3'UTR","miRNA target sites")
  vec2 <- c("All","UTR5","CDS","UTR3","miRNATS")
  vec2[match(x,vec)]
 }
+
+# #================================================================================
+# Below are indexes build upon the first load of the app. 
+# #================================================================================
+
 
 #Variable enumeration
 #Table3_length
@@ -202,10 +266,10 @@ miRNA_ = Table2$Overlap_miRNA > 0
 
 # Stat significance
 No_filter_ = TRUE
-p_less05_ = Table2$Diff_p_value < .05
-p_less01_ = Table2$Diff_p_value < .01
-fdr_less05_ = Table2$Diff_fdr < .05
-fdr_less01_ = Table2$Diff_fdr < .01
+p_05_ = Table2$Diff_p_value < .05
+p_01_ = Table2$Diff_p_value < .01
+fdr_05_ = Table2$Diff_fdr < .05
+fdr_01_ = Table2$Diff_fdr < .01
 
 # Consistency
 Consistent_sites_only_ = Table2$Consistency > 0
