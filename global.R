@@ -1,4 +1,11 @@
-setwd("/Users/weizhen/git/TREW/TREW")
+#setwd("/Users/weizhen/git/TREW/TREW")
+
+# #================================================================================
+# The variables below are essential for the function Tb1() to run properly.
+# You cannot change the variable names of them, because the Tb1() is not self contained!
+# #================================================================================
+
+
 library(shiny)
 library(DT)
 library(readr)
@@ -11,12 +18,14 @@ idx_3to1 <- read_rds("idx_3to1.rds")
 
 # #================================================================================
 # Tb1 is a function that input 5 things
-# 1-3. The first 3 are indexes which are character vectors, and they must be string of codes that are ready to be evaluated and turn into real variables and their logical calculations.
+# 1-3. The first 3 are indexes which are character vectors, and they must be string of codes that are ready to be evaluated and turn into real variables with their logical calculations.
 # 4. GeneId is a character that is taken into the R match function of regular expression --- grepl.
 # 5. Exact is an extra setting that controls wheather the GeneId should be matched exactly or allowing vague pattern match or not.
 # Tb1 will return a subsetted table but in original formatting, it merges the data in table 1, 2, and 3.
 # Also, it adds a column that is logical indicating wheather it should be filtered by the user defined statistical significance filter. 
 # We should not filter statistical significance at first because the insignificant rows are still usefull when calculating tb2.
+# 
+# P.S. this function is not self-contained! it utilize variables that are not defined in its arguments.
 # #================================================================================
 
 Tb1 <- function(idx_3 = TRUE,
@@ -34,6 +43,7 @@ Tb1 <- function(idx_3 = TRUE,
   # length correction
     if (length(idx2) == 1) idx2 = rep(idx2,nrow(Table2))
     if (length(idx3) == 1) idx3 = rep(idx3,nrow(Table3))
+    if (length(idxstat) == 1) idxstat = rep(idxstat,nrow(Table2))
     
   # Select Genes.
   

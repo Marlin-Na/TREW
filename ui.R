@@ -1,5 +1,6 @@
 # setwd("/Users/weizhen/Desktop/Research/RNA\ methylation\ Target\ Database/5.\ Shiny_complete")
 fluidPage(theme = "Yeti.css",
+htmltools::div(class = "container",
 navbarPage(id = 'top.navbar',
            title = 'TREW',
   tabPanel('Query',
@@ -164,5 +165,6 @@ tabPanel('Help', includeMarkdown("documentation.md")),
 tabPanel(value = 'dld','Download', includeMarkdown("documentation_download.md")),
 tabPanel('Contact', includeMarkdown("documentation_contacts.md"))
 # #==================================================End fluid Page===============================================================
+)
 )
 )

@@ -1,7 +1,6 @@
 ---
 output: 
 html_document:
-css: ./www/Yeti.css
 self_contained: no
 ---
 
@@ -18,7 +17,9 @@ Additional Download Supports.
 
 <p>2. <a href= https://github.com/Marlin-Na/TREW  target="_blank" title="MySQL code" >MySQL database frame work.</a>: The source code for the constructions of the MySQL database. </p>
 
-<p>3. <a href= https://github.com/Marlin-Na/TREW  target="_blank" title="SQLite database" >SQLite database.</a>: The underlying SQL database distributed in SQLite form. </p>
+<p>3. <a href= https://github.com/ZhenWei10/TREW_download/blob/master/TREW_0.2.1.db.zip  target="_blank" title="SQLite database" >SQLite database.</a>: The underlying SQL database distributed in SQLite form. </p>
+
+<p>3. <a href= https://github.com/ZhenWei10/TREW_download/blob/master/Table_S.csv  target="_blank" title="The simplified table" >Simplified table.</a>: The complete left table for the records of the entire database. </p>
 </section>
 
 <div style="height:380px;"></div>
