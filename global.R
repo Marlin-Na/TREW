@@ -300,19 +300,17 @@ miRNATS_ = Table2$Overlap_miRNATS
 
 ##### Functions for generating Jbrowse UI  -------------------------------
 
-getAvlGenomes <- function (Genomes) { # vector
-    avl.genomes <- Genomes %>%
-        unique %>%    # TODO Exclude NA values here??
-        as.character
+addNamesForGenomes <- function (Genomes) { # vector
+    genomes <- Genomes
 
     species <-
-        ifelse(avl.genomes == 'hg19', 'Homo sapiens (hg19)',
-        ifelse(avl.genomes == 'mm10', 'Mus musculus (mm10)',
-        ifelse(avl.genomes == 'dm6' , 'Drosophila melanogaster (dm6)', NA)))
+        ifelse(genomes == 'hg19', 'Homo sapiens (hg19)',
+        ifelse(genomes == 'mm10', 'Mus musculus (mm10)',
+        ifelse(genomes == 'dm6' , 'Drosophila melanogaster (dm6)', NA)))
 
-    names(avl.genomes) <- species
+    names(genomes) <- species
 
-    return(avl.genomes)
+    return(genomes)
 }
 
 ## The genome should be specified by user from available genomes.
@@ -395,4 +393,21 @@ getIframeJbrowse <-
     return
 }
 
+matchStrand <- function(candidates, justice) {
+    # stopifnot(length(justice) == 1)
 
+    if (justice == '*')
+        return (rep(T, length(candidates)))
+
+    return(candidates == justice)
+}
+
+getGenesInfo <- function(GeneDf) {
+    names <- GeneDf$gene_id
+    chromosomes <- GeneDf$seqnames
+    strands <- ifelse(GeneDf$seqnames == '-','negative','positive')
+    genomes <- GeneDf$genome_assembly
+
+    sprintf('Gene %s on %s %s strand of %s genome assembly',
+            names, chromosomes, strands, genomes)
+}

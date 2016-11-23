@@ -118,14 +118,15 @@ function(input, output,session) {
     print(paste('T_rows_selected class:',class(input$table_rows_selected)))
     print(paste('T_rows_selected value:',input$table_rows_selected))
     
-    geneDfRow <- df.genes[which(df.genes$gene_id == tb2()$Gene_ID[input$table_rows_selected] &
-                               df.genes$genome_assembly == getAvlGenomes(tb3()[ ,'Genome_assembly'])),
+    geneDfRows <- df.genes[which(df.genes$gene_id == tb2()$Gene_ID[input$table_rows_selected] &
+                                df.genes$genome_assembly == unique(tb3()[ ,'Genome_assembly'])),
                          ]
+    DTinfo$GeneDf <- geneDfRows
     
-    DTinfo$Genome <- getAvlGenomes(tb3()[,'Genome_assembly'])
-    DTinfo$Chromosome <- geneDfRow$seqnames %>% as.character
-    DTinfo$GeneStart <- DTinfo$Start <- geneDfRow$start
-    DTinfo$GeneWidth <- DTinfo$Width <- geneDfRow$width
+    DTinfo$Genome <- unique(tb3()[,'Genome_assembly']) %>% addNamesForGenomes
+    DTinfo$Chromosome <- geneDfRows$seqnames %>% as.character
+    DTinfo$GeneStart <- DTinfo$Start <- geneDfRows$start
+    DTinfo$GeneWidth <- DTinfo$Width <- geneDfRows$width
     DTinfo$Tracks <- getTracks(
       DataSets = tb3()[,'Source_ID'],
       PrimaryTracks = 'gene_model'
@@ -136,19 +137,21 @@ function(input, output,session) {
   })
 
 
-  ## When the table of sites is clicked
+  ## When the table of ranges is clicked
   observeEvent(input$table2_rows_selected, {
     ## For testing purpose
     print(paste('T2_rows_selected class:',class(input$table2_rows_selected)))
     print(paste('T2_rows_selected value:',input$table2_rows_selected))
 
     geneDfRow <- df.genes[which(df.genes$gene_id == tb2()$Gene_ID[input$table_rows_selected] &
-                               df.genes$genome_assembly == getAvlGenomes(tb3()[ ,'Genome_assembly'])),
-                         ]
+                                df.genes$genome_assembly == unique(tb3()[ ,'Genome_assembly']) &
+                                matchStrand(df.genes$strand, tb3()[ ,'Strand'])),
+                          ]   ## TODO  Note that it is still not guaranteed to be a unique row for gene!
+    DTinfo$GeneDf <- geneDfRow
     DTinfo$GeneStart <- geneDfRow$start
     DTinfo$GeneWidth <- geneDfRow$width
 
-    DTinfo$Genome <- getAvlGenomes(tb3()[,'Genome_assembly'])
+    DTinfo$Genome <- unique(tb3()[,'Genome_assembly']) %>% addNamesForGenomes
     DTinfo$Chromosome <- tb3()[input$table2_rows_selected,'Chromosome']
     DTinfo$Start <- tb3()[input$table2_rows_selected,'Range_start']
     DTinfo$Width <- tb3()[input$table2_rows_selected,'Range_width']
@@ -176,6 +179,28 @@ function(input, output,session) {
       getIframeJbrowse()
   })
 
+  ## Jbrowse output status and navagation
+  output$navJbrowse <- renderUI({
+
+      validate(need(DTinfo$GeneDf, 'No corresponding gene.'))
+
+      GeneDf <- DTinfo$GeneDf
+
+      if (nrow(GeneDf) == 1) {
+          return(div(
+              p(getGenesInfo(GeneDf))
+          ))
+      } else {
+          return(div(
+              p(getGenesInfo(GeneDf)[1, ]),
+              h4("Other Locations:"),
+              p(
+                  paste(getGenesInfo(GeneDf)[2:nrow(GeneDf)], collapse = '\n')
+              )
+          ))
+      }
+
+  })
 
   ## Jbrowse output UI
   output$outJbrowse <- renderUI({

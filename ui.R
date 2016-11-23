@@ -136,8 +136,8 @@ conditionalPanel(
   
   fluidRow(
     # Jbrowse navigation
-    column(2
-        # TODO
+    column(2,
+      uiOutput(outputId = 'navJbrowse')
     ),
     # Jbrowse UI
     column(10,
