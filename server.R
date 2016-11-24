@@ -17,21 +17,39 @@ function(input, output,session) {
   )
 }
 )
+  
+  message1 <- eventReactive(input$button,{message_generate1(input$gene,input$exact)})
+  
+  output$Message1 <- renderUI(message1())
+  
   tb2 <- reactive({Tb2(tb1())})
   
   output$table <- DT::renderDataTable(Tb_DT(tb2(), 
                                             main = "Summary Table (select rows to show specific ones)",
-                                      collab = c("Regulator","Target_Gene"," Regulator_Type","Mark","Positive_#","Reliability"),
+                                      collab = c("Regulator","Target_Gene"," Regulator_Type","Mark","Species","Cellline","Technique","Positive_#","Reliability"),
+                                      dom = '<"well well-sm"t><Bf>',
+                                      class = "compact",
                                       responsive = NULL),
                                       server = TRUE)
+  
+  message2 <- eventReactive(input$table_rows_selected,{message_generate2(tb2(),input$table_rows_selected)})
+  
+  output$Message2 <- renderUI(message2())
+  
    
   tb3 <- eventReactive(input$table_rows_selected,{Tb3(Tb1 = tb1(),
                                                       Tb2 = tb2(),
                                                       Select_Number = as.numeric(input$table_rows_selected))})
+  
   output$table2 <- DT::renderDataTable(Tb_DT(tb3(), 
-                                             main = "Specific Table with genomic location",
-                                             select_setting = list(mode = 'single', target = 'row')), 
+                                             main = "Specific Table with genomic location, if you want to highlight a particular range, please select the rows below.",
+                                             select_setting = list(mode = 'single', target = 'row'),
+                                             height = 220,
+                                             dom = '<"well well-sm"t><Bf>',
+                                             style = "semanticui",
+                                             class = "compact"),
                                        server = TRUE)
+  
   output$downloadData <- downloadHandler(
     filename = function() { 
       paste(input$mod, '.csv', sep='') 
@@ -205,7 +223,7 @@ function(input, output,session) {
   ## Jbrowse output UI
   output$outJbrowse <- renderUI({
     # TODO: validate status
-
+    
     reJbrowseUI()
   })
 

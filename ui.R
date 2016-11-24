@@ -1,17 +1,22 @@
 # setwd("/Users/weizhen/Desktop/Research/RNA\ methylation\ Target\ Database/5.\ Shiny_complete")
 fluidPage(theme = "Yeti.css",
-htmltools::div(class = "container",
+htmltools::div(align = "center",      
+htmltools::div(style = "width:80%;", #class = "container"
+htmltools::div(align = "left",
 navbarPage(id = 'top.navbar',
            title = 'TREW',
   tabPanel('Query',
-  titlePanel("TREW: search epitranscriptomic targets of reader, eraser and writer"),
+  h1("TREW: search epitranscriptomic targets of reader, eraser and writer"),
   hr(),
+  
+  div(
+  h1("Gene Query", class = "panel-title") %>% div(class = "panel-heading"),
+  div(
   textInput("gene", NULL, width = 600, placeholder = "Please input gene symbol."),
-  actionButton("button", "Search"),
+  actionButton("button", "Search",class = ""),
   actionButton("more", "More options"),
   checkboxInput('exact', 'Exact match', FALSE),
-#Fluid Row 1#====================================================================================================================================================
-conditionalPanel(
+  conditionalPanel(
   condition = "input.more % 2 == 1",
   hr(),
   fluidRow(
@@ -66,7 +71,7 @@ conditionalPanel(
     #Column 4######################################
     column(3,
            selectInput("teq",
-                       "Technique",
+                       "Techniques:",
                        c("All",unique(Table3$Technique))
            )
     )
@@ -105,45 +110,56 @@ conditionalPanel(
   ),
 fluidRow(column(12, div(actionButton("reset.default", "Reset to default"),align = "right")))
 ),
+class = "panel-body"
+),
+class = "panel panel-primary"
+),
 
 conditionalPanel(
 condition = "input.button >= 1",
 hr(),
-h3("Query results:"),
-br()
+div(
+  h1("Query results", class = "panel-title") %>% div(class = "panel-heading"),
+  div(
+htmlOutput("Message1"),
+htmltools::div(class="well", style = "height: 480px;",
+               fluidRow(
+                 #Tabel 1
+                 column(12,
+                        DT::dataTableOutput("table")
+              )
+       )
 ),
-
-#Fluid row 3#====================================================================================================================================================
-fluidRow(
-  #Column 1#####################################
-  column(6,
-    DT::dataTableOutput("table")
-  ),
-  #Column 2#####################################
-  column(6,
-   DT::dataTableOutput("table2")
+class = "panel-body"
+),
+class = "panel panel-primary"
 )
 ),
-
 #  Jbrowse     ============================================
 
 conditionalPanel(
   condition = "input.button >= 1",
-  
-  hr(),
-  h3("Browser:"),
-  br(),
-  
+div(
+  h1("Browser", class = "panel-title") %>% div(class = "panel-heading"),
+  div(
+  htmlOutput("Message2"),
+htmltools::div(class="well",
   fluidRow(
-    # Jbrowse navigation
-    column(2,
-      uiOutput(outputId = 'navJbrowse')
-    ),
-    # Jbrowse UI
-    column(10,
+    column(12,
       uiOutput(outputId = 'outJbrowse')
     )
+  ),
+  br(),
+fluidRow(
+  column(12,
+         DT::dataTableOutput("table2")
   )
+)
+),
+class = "panel-body"
+),
+class = "panel panel-primary"
+)
 ),
 
 
@@ -160,11 +176,14 @@ fluidRow(
 br(),
 HTML("<p align='center'>Xi'an Jiaotong-Liverpool University 2016 &copy; Copyright</p>")
 )
-  ),
+),
+tabPanel('Browser', includeMarkdown("browser.md")),
 tabPanel('Help', includeMarkdown("documentation.md")),
 tabPanel(value = 'dld','Download', includeMarkdown("documentation_download.md")),
 tabPanel('Contact', includeMarkdown("documentation_contacts.md"))
 # #==================================================End fluid Page===============================================================
+)
+)
 )
 )
 )

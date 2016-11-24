@@ -4497,8 +4497,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-default {
-  background-color: #333333;
-  border-color: #222222;
+  background-color: #008cba;
+  border-color: #006687;
 }
 .navbar-default .navbar-brand {
   color: #ffffff;
@@ -4517,13 +4517,13 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
   color: #ffffff;
-  background-color: #272727;
+  background-color: #006687;
 }
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
   color: #ffffff;
-  background-color: #272727;
+  background-color: #006687;
 }
 .navbar-default .navbar-nav > .disabled > a,
 .navbar-default .navbar-nav > .disabled > a:hover,
@@ -7068,3 +7068,10 @@ input[type="checkbox"] {
 .modal .close {
   color: #222222;
 }
+
+.shiny-output-error-X {
+  font-size: 15px;
+  font-weight: 300;
+  color: #f04124;
+}
+

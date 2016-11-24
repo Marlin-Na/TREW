@@ -9,6 +9,9 @@
 library(shiny)
 library(DT)
 library(readr)
+library(dplyr)
+library(htmltools)
+
 Table1 <- read_tsv("Table1.txt")
 Table2 <- read_tsv("Table2.txt")
 Table3 <- read_tsv("Table3.txt")
@@ -48,7 +51,7 @@ Tb1 <- function(idx_3 = TRUE,
   # Select Genes.
   
   if(exact){
-  hit_idx <- grepl(paste("^",Gene_ID,"$",sep = ""), Table2$Gene_ID)
+  hit_idx <- grepl(paste("^",Gene_ID,"$",sep = ""), Table2$Gene_ID, ignore.case = TRUE)
   }else{
   hit_idx <- grepl(Gene_ID, Table2$Gene_ID, ignore.case = TRUE)
   }
@@ -60,7 +63,14 @@ Tb1 <- function(idx_3 = TRUE,
   
   idx1 <- rep(idx2,idx_2to1)
   
-  if(sum(idx2) == 0){stop("Not found your required sites.")}
+  validate(
+    need(sum(idx2) != 0, paste0('Sorry! We cannot find your gene: "' ,Gene_ID , '" under your defined criterion in our database.\n
+- Our database may currently not record any relationships between the regulators and your interested gene under the defined filters, please try other genes and filters.\n
+- Also, you may not input the valid gene symbol of your target gene from NCBI.\n
+- If you have selected the "Exact match", you could unselect it and try to use the vague match to find your interested genes.\n
+### If you want to check the record about all the genes in the database under your defined criterion,  please input "." into the gene query.')),
+    errorClass = "X"
+  )
   
   idx_t1 = which(idx1)
   idx_t2 = rep(which(idx2),idx_2to1[which(idx2)])
@@ -75,7 +85,7 @@ Tb1 <- function(idx_3 = TRUE,
   cat("Tb1 run once\n")
   cat(idx_3,"\n")
   cat(idx_2,"\n")
-  Tb1[,c(2,1,39,33,34,35,31,6,5,3,4,32,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,36,37,38,40,41,42,43,45)]
+  Tb1[,c(2,39,33,34,35,31,6,5,3,4,1,32,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,36,37,38,40,41,42,43,45)]
 }
 
 # #================================================================================
@@ -95,6 +105,21 @@ count.x <- function(tb1.x,tb2.y){
   hits
 }
 
+annot.x <- function(tb1.x,tb2.y,x_col){
+idx <- match(paste(tb1.x[,4],tb1.x[,16]),paste(tb2.y[,1],tb2.y[,2]))
+tapply(tb1.x[,x_col],idx,function(x) paste(unique(x), collapse = ", "))
+}
+
+#A vectorized dummy solution attempt (unless there is a specialized function for it... otherwise vectorization is difficult)
+annot.new <- function(tb1.x,tb2.y,x_col){
+  idx <- match(paste(tb1.x[,4],tb1.x[,16]),paste(tb2.y[,1],tb2.y[,2]))
+  paste_new <- unique(paste(tb1.x[,x_col],idx,sep="_"))
+  idx_num <- gsub(".*_","",paste_new)
+  idx_car <- gsub("_.*","",paste_new)
+  idx2 <- duplicated(idx_num)
+  only <- idx_car[!idx2]
+  only[idx2] <- paste(only[idx2],idx_car[idx2])
+}
 
 # #================================================================================
 # Tb2
@@ -103,20 +128,27 @@ count.x <- function(tb1.x,tb2.y){
 # #================================================================================
 
 
-Tb2 <- function(Tb1){
-  Tb1 <- Tb1[!duplicated(Tb1$Meth_Site_ID),]
-  Tb2 <- unique(data.frame(Target = Tb1$Target,
-                           Gene_ID = Tb1$Gene_ID, 
-                           Target_type = Tb1$Target_type, 
-                           Modification = Tb1$Modification,
-                           stat_idx = Tb1$stat_idx))
-  Record_num <- count.x(Tb1,Tb2)
-  Tb2$Positive_num <- count.x(Tb1[which(Tb1$Diff_p_value < .05),],Tb2)
-  Tb2$Positive_percent <- paste(round(100*(Tb2$Positive_num/Record_num),2),"%",sep = "")
-  cat("Tb2 run once\n")
-  Tb2 <- Tb2[which((Tb2$Positive_num != 0) & Tb2$stat_idx), -c(5)]
-  rownames(Tb2) <- 1:nrow(Tb2)
-  Tb2
+Tb2 <- function(tb1){
+  tb1 <- tb1[!duplicated(tb1$Meth_Site_ID),]
+  tb1_all <- tb1
+  tb1 <- tb1[which(tb1$stat_idx),]
+  unique_idx <- !duplicated(paste(tb1$Target,tb1$Gene_ID))
+  tb2 <- data.frame(Target = tb1$Target,
+                    Gene_ID = tb1$Gene_ID, 
+                    Target_type = tb1$Target_type, 
+                    Modification = tb1$Modification)[unique_idx,]
+  Record_num <- count.x(tb1_all,tb2)
+  tb2$Species <- factor(annot.x(tb1,tb2,"Species"))
+  tb2$Cell_line <- factor(annot.x(tb1,tb2,"Cell_line"))
+  tb2$Technique <- factor(annot.x(tb1,tb2,"Technique"))
+  tb2$Positive_num <- count.x(tb1[which(tb1$Diff_p_value < .05),],tb2)
+  tb2$Positive_percent <- paste(round(100*(tb2$Positive_num/Record_num),2),"%",sep = "")
+  tb2 <- tb2[which((tb2$Positive_num != 0)),]
+  tb2$Positive_num <- tb2$Positive_num %>% as.character
+  tb2$stat_idx <- NULL
+  rownames(tb2) <- 1:nrow(tb2)
+  cat("tb2 run once\n")
+  tb2
 }
 
 # #================================================================================
@@ -133,18 +165,34 @@ Tb3 <- function(Tb1,Tb2,Select_Number = 1:dim(Tb2)[1])
   
   Tb3 <- Tb1[which(Tb1$Target %in% Tb2_s$Target & 
                      Tb1$Modification %in% Tb2_s$Modification &
-                     Tb1$Gene_ID %in% Tb2_s$Gene_ID), -c(40)]
-  cat("Tb3 run once\n")
+                     Tb1$Gene_ID %in% Tb2_s$Gene_ID &
+                     Tb1$stat_idx), -c(40)]
+  colnames(Tb3) <- gsub("Meth_","",colnames(Tb3))
   rownames(Tb3) <- 1:nrow(Tb3)
+  cat("Tb3 run once\n")
   Tb3
+}
+
+message_generate1 <- function(gene_query, exact_match)
+{
+ match = "Vague match"
+ if (exact_match) match = "Exact match"
+ HTML(paste0("<p class = 'text-info'>","<strong>",match,'</strong> results of the gene query: <strong>"',gene_query,'"</strong>. Select rows of interest to activate its visualization in genome browser.' ,"</p>"))
+ } 
+
+message_generate2 <- function(tb2,Select_Number = 1)
+{
+  tb2_s <- tb2[Select_Number,]
+ HTML(paste0("<p class = 'text-info'>Details of the regulation: <strong>",tb2_s$Target,"</strong>, <strong>",tb2_s$Modification,"</strong>, <strong>",tb2_s$Gene_ID,"</strong>, <strong>",tb2_s$Species,"</strong>; ",
+         "if you want to see other records, please select another row in the table above.</p>"))
 }
 
 # #================================================================================
 # Tb_DT takes 4 inputs
-# 1. Tb: A dataframe "object"
+# 1. Tb: A dataframe "object".
 # 2. collab: The collumn labelings.
 # 3. main: The table legends.
-# 4. responsive: Wheather collapse things into the "+" button if there are no space, if so it is "Responsive", else NULL.
+# 4. responsive: Wheather collapse things into the "+" button if there are no spaces, if so it is "Responsive", else NULL.
 # 5. select_setting: Control the defaulted ways of selection in the table.
 # #================================================================================
 
@@ -153,25 +201,26 @@ Tb_DT <- function(Tb,
                    collab, 
                     main = NULL, 
                      responsive = "Responsive",
-                       select_setting = list(mode = 'single', selected = 1, target = 'row'))
-                  
+                       height = 310,
+                       dom = '<"dropdown-standalone dropdown-coloured"B>fti',
+                       select_setting = list(mode = 'single', selected = 1, target = 'row'),
+                       style = "default",
+                       class = "display")
 {
   DT::datatable(Tb, 
                 rownames = TRUE, 
                 colnames = collab,
                 caption = main,
-                filter = list(position = "bottom",clear = FALSE),
-                #style = 'bootstrap',
-                #class = 'cell-border stripe',
+                style = style,
+                class = class,
                 selection = select_setting,
                 extensions = c("Scroller","ColReorder","Buttons","FixedHeader","FixedColumns",responsive),
                 options = list(
                   searchHighlight = TRUE,
                   deferRender = TRUE,
-                  scrollX = TRUE,
                   scroller = TRUE,
-                  scrollY = 400,
-                  dom = 'Brftip',
+                  scrollY = height,
+                  dom = dom,
                   autoWidth= TRUE,
                   fixedHeader = TRUE,
                   lengthMenu = list(c(10, 50, -1), c('10', '50', 'All')),
@@ -298,6 +347,9 @@ miRNATS_ = Table2$Overlap_miRNATS
 
 
 
+
+
+
 ##### Functions for generating Jbrowse UI  -------------------------------
 
 addNamesForGenomes <- function (Genomes) { # vector
@@ -377,7 +429,7 @@ hide_overview   <- function(Link) paste0(Link, '&overview=0')
 
 getIframeJbrowse <-
     function(LinkJbrowse, style = 'border: 1px solid black',
-             div_id = 'resizable', div_style = 'width: 100%; height: 500px;')
+             div_id = 'resizable', div_style = 'width: 100%; height: 300px;')
 {
     tags$iframe(
         src = LinkJbrowse,
